@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using CodeGame.Classes;
+using CodeGame.Classes.Utilities;
 
 namespace CodeGame {
     public class Game : Microsoft.Xna.Framework.Game {
@@ -17,9 +18,17 @@ namespace CodeGame {
 
         ScreenManager manager;
 
+#if DEBUG
+        FPS fps;
+#endif
+
         public Game() {
             graphics = new GraphicsDeviceManager(this);
+            graphics.SynchronizeWithVerticalRetrace = true;
+            graphics.ApplyChanges();
             Content.RootDirectory = "Content";
+            IsFixedTimeStep = false;
+            IsMouseVisible = true;
         }
 
         protected override void Initialize() {
@@ -33,6 +42,9 @@ namespace CodeGame {
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             manager = new ScreenManager(Content);
+#if DEBUG
+            fps = new FPS(Content, Window.ClientBounds, FPS.Display.TopRight);
+#endif
         }
 
         protected override void UnloadContent() {
@@ -45,6 +57,9 @@ namespace CodeGame {
                 this.Exit();
 
             manager.Update(gameTime);
+#if DEBUG
+            fps.Update();
+#endif
 
             base.Update(gameTime);
         }
@@ -54,6 +69,9 @@ namespace CodeGame {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             manager.Draw(GraphicsDevice, spriteBatch);
+#if DEBUG
+            fps.Draw(spriteBatch);
+#endif
 
             base.Draw(gameTime);
         }

@@ -1,6 +1,5 @@
-
 CodeGame/CodeGameContent/obj/*
 CodeGame/CodeGame/obj/*
-CodeGame/CodeGame/*.csproj.user
 CodeGame/CodeGame/bin/*
 *.suo
+CodeGame/CodeGame/*.csproj.*
