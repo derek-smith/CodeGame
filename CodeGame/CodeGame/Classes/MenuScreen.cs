@@ -12,5 +12,18 @@ using Microsoft.Xna.Framework.Media;
 
 namespace CodeGame.Classes {
     class MenuScreen {
+        ScreenManager _manager;
+
+        public MenuScreen(ScreenManager manager, ContentManager content) {
+            _manager = manager;
+        }
+
+        public void Update(GameTime gameTime) {
+
+        }
+
+        public void Draw(GraphicsDevice graphics, SpriteBatch batch) {
+
+        }
     }
 }

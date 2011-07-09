@@ -107,7 +107,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Classes\GameManager.cs" />
+    <Compile Include="Classes\GameScreen.cs" />
     <Compile Include="Classes\LobbyScreen.cs" />
     <Compile Include="Classes\MenuScreen.cs" />
     <Compile Include="Classes\ScreenManager.cs" />
