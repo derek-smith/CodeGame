@@ -17,7 +17,13 @@ namespace CodeGame.Classes {
         GameScreen _game;
 
         enum ActiveScreen { Menu, Lobby, Game }
-        ActiveScreen active = ActiveScreen.Menu;
+        ActiveScreen _active = ActiveScreen.Menu;
+
+        KeyboardState _keyState = new KeyboardState();
+        KeyboardState _prevKeyState = new KeyboardState();
+
+        MouseState _mouseState = new MouseState();
+        MouseState _prevMouseState = new MouseState();
 
         public ScreenManager(ContentManager content) {
             _menu = new MenuScreen(this, content);
@@ -26,7 +32,9 @@ namespace CodeGame.Classes {
         }
 
         public void Update(GameTime gameTime) {
-            switch (active) {
+            _keyState = Keyboard.GetState();
+            _mouseState = Mouse.GetState();
+            switch (_active) {
                 case ActiveScreen.Menu:
                     _menu.Update(gameTime);
                     break;
@@ -37,10 +45,12 @@ namespace CodeGame.Classes {
                     _game.Update(gameTime);
                     break;
             }
+            _prevKeyState = _keyState;
+            _prevMouseState = _mouseState;
         }
 
         public void Draw(GraphicsDevice graphics, SpriteBatch batch) {
-            switch (active) {
+            switch (_active) {
                 case ActiveScreen.Menu:
                     _menu.Draw(graphics, batch);
                     break;
@@ -51,6 +61,24 @@ namespace CodeGame.Classes {
                     _game.Draw(graphics, batch);
                     break;
             }
+        }
+
+        public bool WasKeyPressed(Keys key) {
+            if (_prevKeyState.IsKeyDown(key) && _keyState.IsKeyUp(key))
+                return true;
+            else
+                return false;
+        }
+
+        public bool WasMouseClicked(out int x, out int y) {
+            x = y = -1;
+            if (_prevMouseState.LeftButton == ButtonState.Pressed && _mouseState.LeftButton == ButtonState.Released) {
+                x = _mouseState.X;
+                y = _mouseState.Y;
+                return true;
+            }
+            else
+                return false;
         }
     }
 }
