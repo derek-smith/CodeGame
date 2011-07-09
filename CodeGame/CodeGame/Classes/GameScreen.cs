@@ -11,6 +11,19 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 
 namespace CodeGame.Classes {
-    class GameManager {
+    class GameScreen {
+        ScreenManager _manager;
+
+        public GameScreen(ScreenManager manager, ContentManager content) {
+            _manager = manager;
+        }
+
+        public void Update(GameTime gameTime) {
+
+        }
+
+        public void Draw(GraphicsDevice graphics, SpriteBatch batch) {
+
+        }
     }
 }
