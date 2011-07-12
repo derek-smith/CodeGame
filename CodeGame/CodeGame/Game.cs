@@ -24,7 +24,7 @@ namespace CodeGame {
 
         public Game() {
             graphics = new GraphicsDeviceManager(this);
-            graphics.SynchronizeWithVerticalRetrace = true;
+            graphics.SynchronizeWithVerticalRetrace = false;
             graphics.ApplyChanges();
             Content.RootDirectory = "Content";
             IsFixedTimeStep = false;
@@ -43,7 +43,7 @@ namespace CodeGame {
 
             manager = new ScreenManager(Content);
 #if DEBUG
-            fps = new FPS(Content, Window.ClientBounds, FPS.Display.TopRight);
+            fps = new FPS(Content, Window.ClientBounds, FPS.Display.BottomRight);
 #endif
         }
 
@@ -58,7 +58,7 @@ namespace CodeGame {
 
             manager.Update(gameTime);
 #if DEBUG
-            fps.Update();
+            fps.Update(gameTime);
 #endif
 
             base.Update(gameTime);
