@@ -13,17 +13,22 @@ using Microsoft.Xna.Framework.Media;
 namespace CodeGame.Classes {
     class MenuScreen {
         ScreenManager _manager;
+        string _string = "";
 
         public MenuScreen(ScreenManager manager, ContentManager content) {
             _manager = manager;
         }
 
         public void Update(GameTime gameTime) {
-
+            _string += _manager.GetKeys();
         }
 
-        public void Draw(GraphicsDevice graphics, SpriteBatch batch) {
-
+        public void Draw(GraphicsDevice graphics, SpriteBatch batch)
+        {
+            graphics.Clear(Color.CornflowerBlue);
+            batch.Begin();
+            batch.DrawString(_manager.Font, _string, new Vector2(10, 10), Color.Blue);
+            batch.End();
         }
     }
 }

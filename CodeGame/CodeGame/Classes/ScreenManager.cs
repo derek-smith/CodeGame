@@ -25,7 +25,10 @@ namespace CodeGame.Classes {
         MouseState _mouseState = new MouseState();
         MouseState _prevMouseState = new MouseState();
 
+        SpriteFont _font;
+
         public ScreenManager(ContentManager content) {
+            _font = content.Load<SpriteFont>(@"Utilities\Tahoma");
             _menu = new MenuScreen(this, content);
             _lobby = new LobbyScreen(this, content);
             _game = new GameScreen(this, content);
@@ -80,5 +83,56 @@ namespace CodeGame.Classes {
             else
                 return false;
         }
+
+        public string[] GetTypedKeys()
+        {
+            List<string> typedKeys = new List<string>();
+            Keys[] keys = _keyState.GetPressedKeys();
+            Keys[] prevKeys = _prevKeyState.GetPressedKeys();
+
+            for (int i = 0; i < prevKeys.Length; i++)
+            {
+                if (!keys.Contains(prevKeys[i]))
+                {
+                    typedKeys.Add(ASCIIEncoding.ASCII.GetString(new byte[] { (byte)prevKeys[i] }));
+                }
+            }
+            return typedKeys.ToArray();
+        }
+
+        private void UpdateKeys()
+        {
+            
+            
+        }
+
+        public string GetKeys()
+        {
+            if (_prevKeyState.GetPressedKeys().Length == 0) return "";
+
+            List<byte> bytes = new List<byte>();
+            StringBuilder str = new StringBuilder();
+            byte b = 0;
+            bool upperCase = false;
+            Keys[] keys = _keyState.GetPressedKeys();
+            Keys[] prevKeys = _prevKeyState.GetPressedKeys();
+
+            for (int i = 0; i < prevKeys.Length; i++)
+            {
+                if (!keys.Contains(prevKeys[i]))
+                {
+                    b = (byte)prevKeys[i];
+                    if (b >= 65 && b <= 90)
+                    {
+                        if (!upperCase) b += 32;
+                        str.Append(Encoding.ASCII.GetString(new byte[] { b }));
+                    }
+                }
+            }
+
+            return str.ToString();
+        }
+
+        public SpriteFont Font { get { return _font; } }
     }
 }
