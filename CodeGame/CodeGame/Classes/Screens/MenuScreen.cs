@@ -22,7 +22,7 @@ namespace CodeGame.Classes.Screens {
             _manager = manager;
             _hostButton = new Button(_manager, "Host-Normal", new Vector2(20, 80), Color.Red);
             _joinButton = new Button(_manager, "Join-Normal", new Vector2(20, 160), Color.Blue);
-            _quitButton = new Button(_manager, "Quit-Normal", new Vector2(20, 240), Color.Purple);
+            _quitButton = new Button(_manager, "Quit-Normal", new Vector2(20, 510), Color.Purple);
             _changeButton = new Button(_manager, "Change-Normal", new Vector2(350, 160), Color.Yellow);
             _menuFont = _manager.ContentManager.Load<SpriteFont>("MenuFont");
             _playerName = new Textbox(_manager, _menuFont, "PlayerName", new Vector2(350, 90), Color.White);

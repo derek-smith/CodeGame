@@ -89,5 +89,10 @@ namespace CodeGame.Classes.Screens {
             _lobby.ChangeFromMenuScreen("Waiting for players...", username);
             _activeScreen = Screen.Lobby;
         }
+
+        public void ChangeToMenuScreen() {
+            _statusBar.Text = "Welcome to Code!";
+            _activeScreen = Screen.Menu;
+        }
     }
 }

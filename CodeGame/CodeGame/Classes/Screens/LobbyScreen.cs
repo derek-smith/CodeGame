@@ -21,7 +21,7 @@ namespace CodeGame.Classes.Screens {
         public LobbyScreen(ScreenManager manager) {
             _manager = manager;
             _font = _manager.ContentManager.Load<SpriteFont>("MenuFont");
-            _backButton = new Button(_manager, 
+            _backButton = new Button(_manager, "Back-Normal", new Vector2(20, 510), Color.Cyan);
         }
 
         public void ChangeFromMenuScreen(string status, string username) {
@@ -30,13 +30,19 @@ namespace CodeGame.Classes.Screens {
         }
 
         public void Update(GameTime gameTime) {
+            _backButton.Update();
 
+            if (_backButton.IsClicked()) {
+                _manager.ChangeToMenuScreen();
+                return;
+            }
         }
 
         public void Draw(GraphicsDevice graphics, SpriteBatch batch) {
             graphics.Clear(Color.CornflowerBlue);
             batch.Begin();
             batch.DrawString(_font, _username, new Vector2(20, 90), Color.White);
+            _backButton.Draw(batch);
             // Leave this out - is called in ScreenManager
             //batch.End();
         }
