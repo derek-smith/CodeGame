@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using CodeGame.Classes.Input;
 
-namespace CodeGame.Classes {
+namespace CodeGame.Classes.Screens {
     enum Screen { Menu, Lobby, Game }
 
     class ScreenManager {

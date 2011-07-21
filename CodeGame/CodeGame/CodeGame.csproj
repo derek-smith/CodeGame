@@ -107,15 +107,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Classes\GameScreen.cs" />
+    <Compile Include="Classes\Screens\GameScreen.cs" />
     <Compile Include="Classes\Input\Button.cs" />
     <Compile Include="Classes\Input\InputManager.cs" />
     <Compile Include="Classes\Input\Textbox.cs" />
-    <Compile Include="Classes\LobbyScreen.cs" />
-    <Compile Include="Classes\MenuScreen.cs" />
+    <Compile Include="Classes\Screens\LobbyScreen.cs" />
+    <Compile Include="Classes\Screens\MenuScreen.cs" />
     <Compile Include="Classes\Network\Client.cs" />
     <Compile Include="Classes\Network\Server.cs" />
-    <Compile Include="Classes\ScreenManager.cs" />
+    <Compile Include="Classes\Screens\ScreenManager.cs" />
+    <Compile Include="Classes\Screens\StatusBar.cs" />
     <Compile Include="Classes\Utilities\FPS.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
