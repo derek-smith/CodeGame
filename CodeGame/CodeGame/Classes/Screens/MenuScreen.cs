@@ -20,12 +20,12 @@ namespace CodeGame.Classes.Screens {
 
         public MenuScreen(ScreenManager manager) {
             _manager = manager;
-            _hostButton = new Button(_manager, "Host-Normal", new Vector2(10, 10), Color.Red);
-            _joinButton = new Button(_manager, "Join-Normal", new Vector2(10, 110), Color.Blue);
-            _quitButton = new Button(_manager, "Quit-Normal", new Vector2(10, 210), Color.Purple);
-            _changeButton = new Button(_manager, "Change-Normal", new Vector2(350, 110), Color.Yellow);
+            _hostButton = new Button(_manager, "Host-Normal", new Vector2(20, 80), Color.Red);
+            _joinButton = new Button(_manager, "Join-Normal", new Vector2(20, 160), Color.Blue);
+            _quitButton = new Button(_manager, "Quit-Normal", new Vector2(20, 240), Color.Purple);
+            _changeButton = new Button(_manager, "Change-Normal", new Vector2(350, 160), Color.Yellow);
             _menuFont = _manager.ContentManager.Load<SpriteFont>("MenuFont");
-            _playerName = new Textbox(_manager, _menuFont, "PlayerName", new Vector2(350, 20), Color.White);
+            _playerName = new Textbox(_manager, _menuFont, "PlayerName", new Vector2(350, 90), Color.White);
         }
 
         public void Update(GameTime gameTime) {
@@ -56,7 +56,8 @@ namespace CodeGame.Classes.Screens {
             _quitButton.Draw(batch);
             _playerName.Draw(batch);
             _changeButton.Draw(batch);
-            batch.End();
+            // Leave this out - is called in ScreenManager
+            //batch.End();
         }
     }
 }

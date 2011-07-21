@@ -23,7 +23,11 @@ namespace CodeGame.Classes.Screens {
         }
 
         public void Draw(GraphicsDevice graphics, SpriteBatch batch) {
+            graphics.Clear(Color.CornflowerBlue);
+            batch.Begin();
 
+            // Leave this out - is called in ScreenManager
+            //batch.End();
         }
     }
 }

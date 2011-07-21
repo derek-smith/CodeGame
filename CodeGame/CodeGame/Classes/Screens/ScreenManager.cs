@@ -21,7 +21,7 @@ namespace CodeGame.Classes.Screens {
         MenuScreen _menu;
         LobbyScreen _lobby;
         GameScreen _game;
-
+        StatusBar _statusBar;
         
         Screen _activeScreen = Screen.Menu;
 
@@ -36,6 +36,7 @@ namespace CodeGame.Classes.Screens {
             _menu = new MenuScreen(this);
             _lobby = new LobbyScreen(this);
             _game = new GameScreen(this);
+            _statusBar = new StatusBar(_gameObject.Content, "Welcome to Code!");
         }
 
         public void Update(GameTime gameTime) {
@@ -72,17 +73,20 @@ namespace CodeGame.Classes.Screens {
                     _game.Draw(graphics, batch);
                     break;
             }
+            _statusBar.Draw(batch);
+            batch.End();
         }
 
         public InputManager InputManager { get { return _input; } }
         public ContentManager ContentManager { get { return _gameObject.Content; } }
+        public StatusBar StatusBar { get { return _statusBar; } }
 
         public void Exit() {
             _gameObject.Exit();
         }
 
         public void ChangeToLobbyScreen(string username) {
-            _lobby.Username = username;
+            _lobby.ChangeFromMenuScreen("Waiting for players...", username);
             _activeScreen = Screen.Lobby;
         }
     }

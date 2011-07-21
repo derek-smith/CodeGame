@@ -27,6 +27,8 @@ namespace CodeGame {
         public Game() {
             graphics = new GraphicsDeviceManager(this);
             graphics.SynchronizeWithVerticalRetrace = false;
+            graphics.PreferredBackBufferWidth = 800;
+            graphics.PreferredBackBufferHeight = 600;
             graphics.ApplyChanges();
             Content.RootDirectory = "Content";
             IsFixedTimeStep = false;
