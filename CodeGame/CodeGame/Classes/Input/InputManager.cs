@@ -10,10 +10,12 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 
+// This should be rewritten to use delegates/events with Textbox as a subscriber
+
 namespace CodeGame.Classes.Input {
     class InputManager {
-        Keys[] _keyState = new Keys[0];
-        Keys[] _prevKeyState = new Keys[0];
+        Keys[] _keyState;
+        Keys[] _prevKeyState;
         MouseState _mouseState, _prevMouseState;
         bool _isProcessingKeys = false;
         bool _isShiftPressed = false;

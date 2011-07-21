@@ -113,6 +113,8 @@
     <Compile Include="Classes\Input\Textbox.cs" />
     <Compile Include="Classes\LobbyScreen.cs" />
     <Compile Include="Classes\MenuScreen.cs" />
+    <Compile Include="Classes\Network\Client.cs" />
+    <Compile Include="Classes\Network\Server.cs" />
     <Compile Include="Classes\ScreenManager.cs" />
     <Compile Include="Classes\Utilities\FPS.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

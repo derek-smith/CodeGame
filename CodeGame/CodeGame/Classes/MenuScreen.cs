@@ -40,6 +40,10 @@ namespace CodeGame.Classes {
             else if (_changeButton.IsClicked()) {
                 _playerName.IsEditMode = !_playerName.IsEditMode;
             }
+            else if (_hostButton.IsClicked()) {
+                _manager.ChangeToLobbyScreen(_playerName.Text);
+                return;
+            }
 
             _playerName.Update(gameTime);
         }

@@ -12,6 +12,8 @@ using Microsoft.Xna.Framework.Media;
 using CodeGame.Classes.Input;
 
 namespace CodeGame.Classes {
+    enum Screen { Menu, Lobby, Game }
+
     class ScreenManager {
         Game _gameObject;
 
@@ -20,8 +22,8 @@ namespace CodeGame.Classes {
         LobbyScreen _lobby;
         GameScreen _game;
 
-        enum ActiveScreen { Menu, Lobby, Game }
-        ActiveScreen _active = ActiveScreen.Menu;
+        
+        Screen _activeScreen = Screen.Menu;
 
         //KeyboardState _keyState = new KeyboardState();
         //KeyboardState _prevKeyState = new KeyboardState();
@@ -41,14 +43,14 @@ namespace CodeGame.Classes {
             //_mouseState = Mouse.GetState();
 
             _input.UpdateBegin();
-            switch (_active) {
-                case ActiveScreen.Menu:
+            switch (_activeScreen) {
+                case Screen.Menu:
                     _menu.Update(gameTime);
                     break;
-                case ActiveScreen.Lobby:
+                case Screen.Lobby:
                     _lobby.Update(gameTime);
                     break;
-                case ActiveScreen.Game:
+                case Screen.Game:
                     _game.Update(gameTime);
                     break;
             }
@@ -59,14 +61,14 @@ namespace CodeGame.Classes {
         }
 
         public void Draw(GraphicsDevice graphics, SpriteBatch batch) {
-            switch (_active) {
-                case ActiveScreen.Menu:
+            switch (_activeScreen) {
+                case Screen.Menu:
                     _menu.Draw(graphics, batch);
                     break;
-                case ActiveScreen.Lobby:
+                case Screen.Lobby:
                     _lobby.Draw(graphics, batch);
                     break;
-                case ActiveScreen.Game:
+                case Screen.Game:
                     _game.Draw(graphics, batch);
                     break;
             }
@@ -79,22 +81,9 @@ namespace CodeGame.Classes {
             _gameObject.Exit();
         }
 
-        //public bool WasKeyPressed(Keys key) {
-        //    if (_prevKeyState.IsKeyDown(key) && _keyState.IsKeyUp(key))
-        //        return true;
-        //    else
-        //        return false;
-        //}
-
-        //public bool WasMouseClicked(out int x, out int y) {
-        //    x = y = -1;
-        //    if (_prevMouseState.LeftButton == ButtonState.Pressed && _mouseState.LeftButton == ButtonState.Released) {
-        //        x = _mouseState.X;
-        //        y = _mouseState.Y;
-        //        return true;
-        //    }
-        //    else
-        //        return false;
-        //}
+        public void ChangeToLobbyScreen(string username) {
+            _lobby.Username = username;
+            _activeScreen = Screen.Lobby;
+        }
     }
 }
