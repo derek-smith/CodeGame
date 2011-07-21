@@ -14,7 +14,7 @@ namespace CodeGame.Classes {
     class LobbyScreen {
         ScreenManager _manager;
 
-        public LobbyScreen(ScreenManager manager, ContentManager content) {
+        public LobbyScreen(ScreenManager manager) {
             _manager = manager;
         }
 

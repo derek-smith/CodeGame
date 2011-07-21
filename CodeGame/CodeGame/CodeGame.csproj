@@ -108,6 +108,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\GameScreen.cs" />
+    <Compile Include="Classes\Input\Button.cs" />
+    <Compile Include="Classes\Input\InputManager.cs" />
+    <Compile Include="Classes\Input\Textbox.cs" />
     <Compile Include="Classes\LobbyScreen.cs" />
     <Compile Include="Classes\MenuScreen.cs" />
     <Compile Include="Classes\ScreenManager.cs" />

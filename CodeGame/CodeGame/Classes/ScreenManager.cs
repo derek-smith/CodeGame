@@ -9,9 +9,13 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using CodeGame.Classes.Input;
 
 namespace CodeGame.Classes {
     class ScreenManager {
+        Game _gameObject;
+
+        InputManager _input = new InputManager();
         MenuScreen _menu;
         LobbyScreen _lobby;
         GameScreen _game;
@@ -19,24 +23,24 @@ namespace CodeGame.Classes {
         enum ActiveScreen { Menu, Lobby, Game }
         ActiveScreen _active = ActiveScreen.Menu;
 
-        KeyboardState _keyState = new KeyboardState();
-        KeyboardState _prevKeyState = new KeyboardState();
+        //KeyboardState _keyState = new KeyboardState();
+        //KeyboardState _prevKeyState = new KeyboardState();
 
-        MouseState _mouseState = new MouseState();
-        MouseState _prevMouseState = new MouseState();
+        //MouseState _mouseState = new MouseState();
+        //MouseState _prevMouseState = new MouseState();
 
-        SpriteFont _font;
-
-        public ScreenManager(ContentManager content) {
-            _font = content.Load<SpriteFont>(@"Utilities\Tahoma");
-            _menu = new MenuScreen(this, content);
-            _lobby = new LobbyScreen(this, content);
-            _game = new GameScreen(this, content);
+        public ScreenManager(Game game) {
+            _gameObject = game;
+            _menu = new MenuScreen(this);
+            _lobby = new LobbyScreen(this);
+            _game = new GameScreen(this);
         }
 
         public void Update(GameTime gameTime) {
-            _keyState = Keyboard.GetState();
-            _mouseState = Mouse.GetState();
+            //_keyState = Keyboard.GetState();
+            //_mouseState = Mouse.GetState();
+
+            _input.UpdateBegin();
             switch (_active) {
                 case ActiveScreen.Menu:
                     _menu.Update(gameTime);
@@ -48,8 +52,10 @@ namespace CodeGame.Classes {
                     _game.Update(gameTime);
                     break;
             }
-            _prevKeyState = _keyState;
-            _prevMouseState = _mouseState;
+            _input.UpdateEnd();
+
+            //_prevKeyState = _keyState;
+            //_prevMouseState = _mouseState;
         }
 
         public void Draw(GraphicsDevice graphics, SpriteBatch batch) {
@@ -66,73 +72,29 @@ namespace CodeGame.Classes {
             }
         }
 
-        public bool WasKeyPressed(Keys key) {
-            if (_prevKeyState.IsKeyDown(key) && _keyState.IsKeyUp(key))
-                return true;
-            else
-                return false;
+        public InputManager InputManager { get { return _input; } }
+        public ContentManager ContentManager { get { return _gameObject.Content; } }
+
+        public void Exit() {
+            _gameObject.Exit();
         }
 
-        public bool WasMouseClicked(out int x, out int y) {
-            x = y = -1;
-            if (_prevMouseState.LeftButton == ButtonState.Pressed && _mouseState.LeftButton == ButtonState.Released) {
-                x = _mouseState.X;
-                y = _mouseState.Y;
-                return true;
-            }
-            else
-                return false;
-        }
+        //public bool WasKeyPressed(Keys key) {
+        //    if (_prevKeyState.IsKeyDown(key) && _keyState.IsKeyUp(key))
+        //        return true;
+        //    else
+        //        return false;
+        //}
 
-        public string[] GetTypedKeys()
-        {
-            List<string> typedKeys = new List<string>();
-            Keys[] keys = _keyState.GetPressedKeys();
-            Keys[] prevKeys = _prevKeyState.GetPressedKeys();
-
-            for (int i = 0; i < prevKeys.Length; i++)
-            {
-                if (!keys.Contains(prevKeys[i]))
-                {
-                    typedKeys.Add(ASCIIEncoding.ASCII.GetString(new byte[] { (byte)prevKeys[i] }));
-                }
-            }
-            return typedKeys.ToArray();
-        }
-
-        private void UpdateKeys()
-        {
-            
-            
-        }
-
-        public string GetKeys()
-        {
-            if (_prevKeyState.GetPressedKeys().Length == 0) return "";
-
-            List<byte> bytes = new List<byte>();
-            StringBuilder str = new StringBuilder();
-            byte b = 0;
-            bool upperCase = false;
-            Keys[] keys = _keyState.GetPressedKeys();
-            Keys[] prevKeys = _prevKeyState.GetPressedKeys();
-
-            for (int i = 0; i < prevKeys.Length; i++)
-            {
-                if (!keys.Contains(prevKeys[i]))
-                {
-                    b = (byte)prevKeys[i];
-                    if (b >= 65 && b <= 90)
-                    {
-                        if (!upperCase) b += 32;
-                        str.Append(Encoding.ASCII.GetString(new byte[] { b }));
-                    }
-                }
-            }
-
-            return str.ToString();
-        }
-
-        public SpriteFont Font { get { return _font; } }
+        //public bool WasMouseClicked(out int x, out int y) {
+        //    x = y = -1;
+        //    if (_prevMouseState.LeftButton == ButtonState.Pressed && _mouseState.LeftButton == ButtonState.Released) {
+        //        x = _mouseState.X;
+        //        y = _mouseState.Y;
+        //        return true;
+        //    }
+        //    else
+        //        return false;
+        //}
     }
 }

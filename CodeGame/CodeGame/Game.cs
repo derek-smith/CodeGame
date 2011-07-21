@@ -1,3 +1,5 @@
+#define FPS_COUNTER
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +20,7 @@ namespace CodeGame {
 
         ScreenManager manager;
 
-#if DEBUG
+#if FPS_COUNTER
         FPS fps;
 #endif
 
@@ -41,8 +43,8 @@ namespace CodeGame {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            manager = new ScreenManager(Content);
-#if DEBUG
+            manager = new ScreenManager(this);
+#if FPS_COUNTER
             fps = new FPS(Content, Window.ClientBounds, FPS.Display.BottomRight);
 #endif
         }
@@ -57,7 +59,8 @@ namespace CodeGame {
                 this.Exit();
 
             manager.Update(gameTime);
-#if DEBUG
+
+#if FPS_COUNTER
             fps.Update(gameTime);
 #endif
 
@@ -69,7 +72,7 @@ namespace CodeGame {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             manager.Draw(GraphicsDevice, spriteBatch);
-#if DEBUG
+#if FPS_COUNTER
             fps.Draw(spriteBatch);
 #endif
 
