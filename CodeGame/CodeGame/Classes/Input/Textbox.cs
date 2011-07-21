@@ -21,35 +21,28 @@ namespace CodeGame.Classes.Input {
         bool _isEditMode = false;
         SpriteFont _font;
         Color _color;
+        string _startText;
 
         public Textbox(ScreenManager screen, SpriteFont font, string startText, Vector2 position, Color color) {
             _input = screen.InputManager;
             _font = font;
+            _startText = startText;
             _text = new StringBuilder(startText);
             _textPosition = position;
             _color = color;
             _cursor = screen.ContentManager.Load<Texture2D>("Cursor");
-            Vector2 textDim = _font.MeasureString(_text);
             _cursorPosition = position;
-            _cursorPosition.X += textDim.X + 3;
             _cursorPosition.Y -= 6;
+            UpdateCursor();
         }
 
         public void Update(GameTime gameTime) {
             if (_isEditMode) {
-                //bool isUpper = false;
+                
                 Keys[] keys = _input.GetKeys();
                 if (keys.Length == 0) return;
-                int i;
-                // Loop thru the first time to find out if shift is being held down.
-                //for (i = 0; i < keys.Length; i++) {
-                //    if (keys[i] == Keys.LeftShift || keys[i] == Keys.RightShift) {
-                //        isUpper = true;
-                //        break;
-                //    }
-                //}
-                // Loop thru the second time to extract valid characters
-                for (i = 0; i < keys.Length; i++) {
+
+                for (int i = 0; i < keys.Length; i++) {
                     if (keys[i] == Keys.Enter) {
                         IsEditMode = false;
                         return;
@@ -96,6 +89,11 @@ namespace CodeGame.Classes.Input {
             set {
                 _isEditMode = value;
                 _input.IsProcessingKeys = value;
+
+                if (_isEditMode == false && _text.Length == 0) {
+                    _text.Append(_startText);
+                    UpdateCursor();
+                }
             }
         }
     }
