@@ -115,6 +115,7 @@
     <Compile Include="Classes\Screens\MenuScreen.cs" />
     <Compile Include="Classes\Network\Client.cs" />
     <Compile Include="Classes\Network\Server.cs" />
+    <Compile Include="Classes\Screens\MessageBox.cs" />
     <Compile Include="Classes\Screens\ScreenManager.cs" />
     <Compile Include="Classes\Screens\StatusBar.cs" />
     <Compile Include="Classes\Utilities\FPS.cs" />

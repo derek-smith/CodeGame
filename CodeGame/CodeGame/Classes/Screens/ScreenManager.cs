@@ -22,8 +22,11 @@ namespace CodeGame.Classes.Screens {
         LobbyScreen _lobby;
         GameScreen _game;
         StatusBar _statusBar;
+        MessageBox _message;
         
         Screen _activeScreen = Screen.Menu;
+
+        RenderTarget2D _renderTo;
 
         //KeyboardState _keyState = new KeyboardState();
         //KeyboardState _prevKeyState = new KeyboardState();
@@ -37,6 +40,11 @@ namespace CodeGame.Classes.Screens {
             _lobby = new LobbyScreen(this);
             _game = new GameScreen(this);
             _statusBar = new StatusBar(_gameObject.Content, "Welcome to Code!");
+
+            int width = _gameObject.GraphicsDevice.DisplayMode.Width;
+            int height = _gameObject.GraphicsDevice.DisplayMode.Height;
+            _renderTo = new RenderTarget2D(_gameObject.GraphicsDevice, width, height);
+            _message = new MessageBox(this);
         }
 
         public void Update(GameTime gameTime) {
@@ -62,6 +70,8 @@ namespace CodeGame.Classes.Screens {
         }
 
         public void Draw(GraphicsDevice graphics, SpriteBatch batch) {
+            _gameObject.GraphicsDevice.SetRenderTarget(_renderTo);
+            
             switch (_activeScreen) {
                 case Screen.Menu:
                     _menu.Draw(graphics, batch);
@@ -75,11 +85,23 @@ namespace CodeGame.Classes.Screens {
             }
             _statusBar.Draw(batch);
             batch.End();
+
+            _gameObject.GraphicsDevice.SetRenderTarget(null);
+
+            batch.Begin();
+            batch.Draw(_renderTo, Vector2.Zero, Color.White);
+
+            if (_message.Active)
+                _message.Draw(batch);
+
+            batch.End();
         }
 
         public InputManager InputManager { get { return _input; } }
         public ContentManager ContentManager { get { return _gameObject.Content; } }
         public StatusBar StatusBar { get { return _statusBar; } }
+        public Game Game { get { return _gameObject; } }
+        public MessageBox MessageBox { get { return _message; } }
 
         public void Exit() {
             _gameObject.Exit();
