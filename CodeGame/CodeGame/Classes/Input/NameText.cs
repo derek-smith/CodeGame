@@ -12,7 +12,7 @@ using CodeGame.Classes.Screens;
 using System.Text;
 
 namespace CodeGame.Classes.Input {
-    class Textbox {
+    class NameText {
         InputManager _input;
         Texture2D _cursor;
         Vector2 _cursorPosition;
@@ -21,13 +21,13 @@ namespace CodeGame.Classes.Input {
         bool _isEditMode = false;
         SpriteFont _font;
         Color _color;
-        string _startText;
+        //string _startText;
 
-        public Textbox(ScreenManager screen, SpriteFont font, string startText, Vector2 position, Color color) {
+        public NameText(ScreenManager screen, SpriteFont font, Vector2 position, Color color) {
             _input = screen.InputManager;
             _font = font;
-            _startText = startText;
-            _text = new StringBuilder(startText);
+            //_startText = startText;
+            _text = new StringBuilder();
             _textPosition = position;
             _color = color;
             _cursor = screen.ContentManager.Load<Texture2D>("Cursor");
@@ -43,14 +43,17 @@ namespace CodeGame.Classes.Input {
                 if (keys.Length == 0) return;
 
                 for (int i = 0; i < keys.Length; i++) {
+                    if (keys[i] == Keys.LeftShift || keys[i] == Keys.RightShift) continue; 
+                    
                     if (keys[i] == Keys.Enter) {
                         IsEditMode = false;
                         return;
                     }
-
-                    if (keys[i] == Keys.LeftShift || keys[i] == Keys.RightShift) continue;
-
-                    if (keys[i] == Keys.Back) {
+                    else if (keys[i] == Keys.OemPeriod) {
+                        _text.Append(".");
+                        UpdateCursor();
+                    }
+                    else if (keys[i] == Keys.Back) {
                         if (_text.Length > 0) {
                             _text.Remove(_text.Length - 1, 1);
                             UpdateCursor();
@@ -69,6 +72,7 @@ namespace CodeGame.Classes.Input {
         }
 
         private void UpdateCursor() {
+            // Possible Exception: character not in the font (Type: ArgumentException)
             Vector2 textMeasurements = _font.MeasureString(_text);
             _cursorPosition.X = _textPosition.X + textMeasurements.X + 3;
         }
@@ -77,11 +81,20 @@ namespace CodeGame.Classes.Input {
             batch.DrawString(_font, _text.ToString(), _textPosition, _color);
 
             if (_isEditMode) {
-                batch.Draw(_cursor, _cursorPosition, Color.White);
+                batch.Draw(_cursor, _cursorPosition, Color.Black);
             }
         }
 
-        public string Text { get { return _text.ToString(); } }
+        public string Text {
+            get {
+                return _text.ToString();
+            }
+            set {
+                _text = new StringBuilder(value);
+                UpdateCursor();
+            }
+        }
+
         public bool IsEditMode {
             get {
                 return _isEditMode;
@@ -90,10 +103,10 @@ namespace CodeGame.Classes.Input {
                 _isEditMode = value;
                 _input.IsProcessingKeys = value;
 
-                if (_isEditMode == false && _text.Length == 0) {
-                    _text.Append(_startText);
-                    UpdateCursor();
-                }
+                //if (_isEditMode == false && _text.Length == 0) {
+                //    _text.Append(_startText);
+                //    UpdateCursor();
+                //}
             }
         }
     }

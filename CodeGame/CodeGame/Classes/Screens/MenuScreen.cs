@@ -13,58 +13,70 @@ using CodeGame.Classes.Input;
 
 namespace CodeGame.Classes.Screens {
     class MenuScreen {
-        ScreenManager _manager;
+        ScreenManager _screen;
         Button _hostButton, _joinButton, _quitButton, _changeButton;
-        Textbox _playerName;
         SpriteFont _menuFont;
-        Button _testButton;
 
-        public MenuScreen(ScreenManager manager) {
-            _manager = manager;
-            _hostButton = new Button(_manager, "Host-Normal", new Vector2(20, 80), Color.Red);
-            _joinButton = new Button(_manager, "Join-Normal", new Vector2(20, 160), Color.Blue);
-            _quitButton = new Button(_manager, "Quit-Normal", new Vector2(20, 510), Color.Purple);
-            _changeButton = new Button(_manager, "Change-Normal", new Vector2(350, 160), Color.Yellow);
-            _menuFont = _manager.ContentManager.Load<SpriteFont>("MenuFont");
-            _playerName = new Textbox(_manager, _menuFont, "PlayerName", new Vector2(350, 90), Color.White);
-            _testButton = new Button(_manager, "Test-Normal", new Vector2(20, 240), Color.Green);
+        string _name;
+        string _lblName;
+        Vector2 _lblNamePosition = new Vector2(350, 90);
+        string _ipAddress;
+
+        public string PlayerName { get { return _name; } set { _name = value; _lblName = "Name: " + _name; } }
+        public string IPAddress { get { return _ipAddress; } set { _ipAddress = value; } }
+
+        public MenuScreen(ScreenManager screen) {
+
+            PlayerName = "dsmith";
+            IPAddress = "127.0.0.1";
+
+            _screen = screen;
+            _hostButton = new Button(_screen, "Host-Normal", new Vector2(20, 80), Color.Red, false);
+            _joinButton = new Button(_screen, "Join-Normal", new Vector2(20, 160), Color.Blue, false);
+            _quitButton = new Button(_screen, "Quit-Normal", new Vector2(20, 510), Color.Purple, false);
+            _changeButton = new Button(_screen, "Change-Normal", new Vector2(350, 160), Color.Yellow, false);
+            _menuFont = _screen.ContentManager.Load<SpriteFont>("MenuFont");
         }
 
         public void Update(GameTime gameTime) {
-            _hostButton.Update();
-            _joinButton.Update();
-            _quitButton.Update();
-            _changeButton.Update();
-            _testButton.Update();
-
-            if (_quitButton.IsClicked()) {
-                _manager.Exit();
-            }
-            else if (_changeButton.IsClicked()) {
-                _playerName.IsEditMode = !_playerName.IsEditMode;
-            }
-            else if (_hostButton.IsClicked()) {
-                _manager.ChangeToLobbyScreen(_playerName.Text);
-                return;
-            }
-            else if (_testButton.IsClicked()) {
-                _manager.MessageBox.Show("Is this thing on? *tap tap*");
-            }
-
-            _playerName.Update(gameTime);
+            UpdateControls();
+            HandleButtonActions();
         }
 
         public void Draw(GraphicsDevice graphics, SpriteBatch batch) {
             graphics.Clear(Color.CornflowerBlue);
             batch.Begin();
+
             _hostButton.Draw(batch);
             _joinButton.Draw(batch);
             _quitButton.Draw(batch);
-            _playerName.Draw(batch);
             _changeButton.Draw(batch);
-            _testButton.Draw(batch);
+            batch.DrawString(_menuFont, _lblName, _lblNamePosition, Color.Black);
+
             // Leave this out - is called in ScreenManager
             //batch.End();
+        }
+
+        private void UpdateControls() {
+            _hostButton.Update();
+            _joinButton.Update();
+            _quitButton.Update();
+            _changeButton.Update();
+        }
+
+        private void HandleButtonActions() {
+            if (_quitButton.IsClicked()) {
+                _screen.Close();
+            }
+            else if (_changeButton.IsClicked()) {
+                _screen.NameBox.Show();
+            }
+            else if (_hostButton.IsClicked()) {
+                _screen.ChangeToLobbyScreen(_name);
+            }
+            else if (_joinButton.IsClicked()) {
+                _screen.IPBox.Show();
+            }
         }
     }
 }

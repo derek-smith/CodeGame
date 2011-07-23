@@ -20,6 +20,9 @@ namespace CodeGame.Classes.Input {
         bool _isProcessingKeys = false;
         bool _isShiftPressed = false;
         Dictionary<Keys, bool> _lockedKeys = new Dictionary<Keys, bool>();
+        bool _boxHasFocus = false;
+
+        public bool BoxHasFocus { get { return _boxHasFocus; } set { _boxHasFocus = value; } }
 
         public InputManager() {
 
@@ -42,8 +45,6 @@ namespace CodeGame.Classes.Input {
             return (_prevMouseState.LeftButton == ButtonState.Pressed &&
                     _mouseState.LeftButton == ButtonState.Released);
         }
-
-        //public Keys[] PressedKeys { get { return _keyState.GetPressedKeys(); } }
 
         public bool IsProcessingKeys
         { 
@@ -93,6 +94,7 @@ namespace CodeGame.Classes.Input {
         private void InitializeKeys() {
             _lockedKeys[Keys.Space]         = false;
             _lockedKeys[Keys.Back]          = false;
+            _lockedKeys[Keys.OemPeriod]     = false;
             for (int i = 48; i <= 57; i++) _lockedKeys[(Keys)i] = false;
             for (int i = 65; i <= 90; i++) _lockedKeys[(Keys)i] = false;
             _keyState = new Keys[0];
@@ -103,6 +105,7 @@ namespace CodeGame.Classes.Input {
             int n = (int)key;
             return (key == Keys.Space       ||
                     key == Keys.Back        ||
+                    key == Keys.OemPeriod   ||
                     (n >= 48 && n <= 57)    ||      // Numbers
                     (n >= 65 && n <= 90));          // Letters
         }

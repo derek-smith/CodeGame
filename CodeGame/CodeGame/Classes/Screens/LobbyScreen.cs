@@ -21,7 +21,7 @@ namespace CodeGame.Classes.Screens {
         public LobbyScreen(ScreenManager manager) {
             _manager = manager;
             _font = _manager.ContentManager.Load<SpriteFont>("MenuFont");
-            _backButton = new Button(_manager, "Back-Normal", new Vector2(20, 510), Color.Cyan);
+            _backButton = new Button(_manager, "Back-Normal", new Vector2(20, 510), Color.Cyan, false);
         }
 
         public void ChangeFromMenuScreen(string status, string username) {

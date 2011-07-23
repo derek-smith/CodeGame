@@ -17,18 +17,19 @@ namespace CodeGame.Classes.Input {
         Texture2D _texture;
         Vector2 _postion;
         Color _color, _hoverColor;
-        bool _isEnabled = true;
+        bool _forceUpdate;
 
-        public Button(ScreenManager screen, string texture, Vector2 position, Color hoverColor) {
+        public Button(ScreenManager screen, string texture, Vector2 position, Color hoverColor, bool forceUpdate) {
             _input = screen.InputManager;
             _texture = screen.ContentManager.Load<Texture2D>(texture);
             _postion = position;
             _hoverColor = hoverColor;
             _color = Color.White;
+            _forceUpdate = forceUpdate;
         }
 
         public void Update() {
-            if (!_isEnabled) return;
+            if (_input.BoxHasFocus && !_forceUpdate) return;
 
             if (IsHover())
                 _color = _hoverColor;
@@ -37,14 +38,11 @@ namespace CodeGame.Classes.Input {
         }
 
         public void Draw(SpriteBatch batch) {
-            if (_isEnabled)
-                batch.Draw(_texture, _postion, _color);
-            else
-                batch.Draw(_texture, _postion, Color.DarkGray);
+            batch.Draw(_texture, _postion, _color);
         }
 
         public bool IsClicked() {
-            if (_isEnabled && IsHover() && _input.IsMouseClicked())
+            if ((!_input.BoxHasFocus || _forceUpdate) && IsHover() && _input.IsMouseClicked())
                 return true;
             else
                 return false;
@@ -59,7 +57,5 @@ namespace CodeGame.Classes.Input {
             else
                 return false;
         }
-
-        public bool IsEnabled { get { return _isEnabled; } set { _isEnabled = value; } }
     }
 }

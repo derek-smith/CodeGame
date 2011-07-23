@@ -15,41 +15,36 @@ namespace CodeGame.Classes.Screens {
     enum Screen { Menu, Lobby, Game }
 
     class ScreenManager {
-        Game _gameObject;
+        Game _g;
 
         InputManager _input = new InputManager();
         MenuScreen _menu;
         LobbyScreen _lobby;
         GameScreen _game;
         StatusBar _statusBar;
-        MessageBox _message;
+        NameBox _nameBox;
+        IPBox _ipBox;
         
         Screen _activeScreen = Screen.Menu;
 
         RenderTarget2D _renderTo;
 
-        //KeyboardState _keyState = new KeyboardState();
-        //KeyboardState _prevKeyState = new KeyboardState();
-
-        //MouseState _mouseState = new MouseState();
-        //MouseState _prevMouseState = new MouseState();
-
         public ScreenManager(Game game) {
-            _gameObject = game;
+            _g = game;
             _menu = new MenuScreen(this);
             _lobby = new LobbyScreen(this);
             _game = new GameScreen(this);
-            _statusBar = new StatusBar(_gameObject.Content, "Welcome to Code!");
+            _statusBar = new StatusBar(_g.Content, "Welcome to Code! the card game.");
 
-            int width = _gameObject.GraphicsDevice.DisplayMode.Width;
-            int height = _gameObject.GraphicsDevice.DisplayMode.Height;
-            _renderTo = new RenderTarget2D(_gameObject.GraphicsDevice, width, height);
-            _message = new MessageBox(this);
+            int width = _g.GraphicsDevice.Viewport.Width;
+            int height = _g.GraphicsDevice.Viewport.Height;
+            _renderTo = new RenderTarget2D(_g.GraphicsDevice, width, height);
+
+            _nameBox = new NameBox(this);
+            _ipBox = new IPBox(this);
         }
 
         public void Update(GameTime gameTime) {
-            //_keyState = Keyboard.GetState();
-            //_mouseState = Mouse.GetState();
 
             _input.UpdateBegin();
             switch (_activeScreen) {
@@ -63,14 +58,17 @@ namespace CodeGame.Classes.Screens {
                     _game.Update(gameTime);
                     break;
             }
+            if (_nameBox.Active)
+                _nameBox.Update(gameTime);
+            else if (_ipBox.Active)
+                _ipBox.Update(gameTime);
+
             _input.UpdateEnd();
 
-            //_prevKeyState = _keyState;
-            //_prevMouseState = _mouseState;
         }
 
         public void Draw(GraphicsDevice graphics, SpriteBatch batch) {
-            _gameObject.GraphicsDevice.SetRenderTarget(_renderTo);
+            _g.GraphicsDevice.SetRenderTarget(_renderTo);
             
             switch (_activeScreen) {
                 case Screen.Menu:
@@ -86,25 +84,29 @@ namespace CodeGame.Classes.Screens {
             _statusBar.Draw(batch);
             batch.End();
 
-            _gameObject.GraphicsDevice.SetRenderTarget(null);
+            _g.GraphicsDevice.SetRenderTarget(null);
 
             batch.Begin();
             batch.Draw(_renderTo, Vector2.Zero, Color.White);
 
-            if (_message.Active)
-                _message.Draw(batch);
+            if (_nameBox.Active)
+                _nameBox.Draw(batch);
+            else if (_ipBox.Active)
+                _ipBox.Draw(batch);
 
             batch.End();
         }
 
         public InputManager InputManager { get { return _input; } }
-        public ContentManager ContentManager { get { return _gameObject.Content; } }
+        public ContentManager ContentManager { get { return _g.Content; } }
         public StatusBar StatusBar { get { return _statusBar; } }
-        public Game Game { get { return _gameObject; } }
-        public MessageBox MessageBox { get { return _message; } }
+        public Game Game { get { return _g; } }
+        public NameBox NameBox { get { return _nameBox; } }
+        public MenuScreen MenuScreen { get { return _menu; } }
+        public IPBox IPBox { get { return _ipBox; } }
 
-        public void Exit() {
-            _gameObject.Exit();
+        public void Close() {
+            _g.Exit();
         }
 
         public void ChangeToLobbyScreen(string username) {
