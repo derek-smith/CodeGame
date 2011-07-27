@@ -7,11 +7,15 @@ using System.Net.Sockets;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using System.Diagnostics;
 
 namespace CodeGame.Classes.Network.Server {
     class Server {
+        ServerShared _shared;
 
-        public Server() {
+        public Server(ServerShared shared) {
+            _shared = shared;
+
             Thread listenThread = new Thread(Run);
             //listenThread.IsBackground = true;
             listenThread.Start();
@@ -22,15 +26,14 @@ namespace CodeGame.Classes.Network.Server {
             listenSocket.Bind(new IPEndPoint(IPAddress.Any, 12345));
             listenSocket.Listen(3);
 
-            while (true) {
-                Socket clientSocket = listenSocket.Accept();
+            Socket clientSocket = listenSocket.Accept();
 
-                BinaryWriter bw = new BinaryWriter(new NetworkStream(clientSocket));
+            BinaryReader br = new BinaryReader(new NetworkStream(clientSocket));
+            string s = br.ReadString();
+            Debug.WriteLine(s);
+            
 
-                bw.Write("Hello World!");
-
-                bw.Close();
-            }
+            br.Close();
         }
     }
 }

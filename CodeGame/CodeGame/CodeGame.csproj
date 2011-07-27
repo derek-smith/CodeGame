@@ -108,6 +108,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\Input\IPText.cs" />
+    <Compile Include="Classes\Network\SharedData.cs" />
     <Compile Include="Classes\Screens\IPBox.cs" />
     <Compile Include="Classes\Screens\GameScreen.cs" />
     <Compile Include="Classes\Input\Button.cs" />

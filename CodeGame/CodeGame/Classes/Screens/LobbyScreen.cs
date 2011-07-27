@@ -19,6 +19,7 @@ namespace CodeGame.Classes.Screens {
         SpriteFont _font;
         Button _backButton;
         Server server;
+        ServerShared _shared;
 
         public LobbyScreen(ScreenManager manager) {
             _manager = manager;
@@ -29,7 +30,8 @@ namespace CodeGame.Classes.Screens {
         public void ChangeFromMenuScreen(string status, string username) {
             _manager.StatusBar.Text = status;
             _username = username;
-            server = new Server();
+            _shared = new ServerShared();
+            server = new Server(_shared);
         }
 
         public void Update(GameTime gameTime) {

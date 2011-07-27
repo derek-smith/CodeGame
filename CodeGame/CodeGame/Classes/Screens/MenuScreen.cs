@@ -10,6 +10,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using CodeGame.Classes.Input;
+using CodeGame.Classes.Network.Client;
+using CodeGame.Classes.Network.Server;
 
 namespace CodeGame.Classes.Screens {
     class MenuScreen {
@@ -75,7 +77,8 @@ namespace CodeGame.Classes.Screens {
                 _screen.ChangeToLobbyScreen(_name);
             }
             else if (_joinButton.IsClicked()) {
-                _screen.IPBox.Show();
+                //_screen.IPBox.Show();
+                Client c = new Client();
             }
         }
     }
