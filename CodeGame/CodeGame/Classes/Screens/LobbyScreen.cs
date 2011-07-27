@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using CodeGame.Classes.Input;
+using CodeGame.Classes.Network.Server;
 
 namespace CodeGame.Classes.Screens {
     class LobbyScreen {
@@ -17,6 +18,7 @@ namespace CodeGame.Classes.Screens {
         string _username;
         SpriteFont _font;
         Button _backButton;
+        Server server;
 
         public LobbyScreen(ScreenManager manager) {
             _manager = manager;
@@ -27,6 +29,7 @@ namespace CodeGame.Classes.Screens {
         public void ChangeFromMenuScreen(string status, string username) {
             _manager.StatusBar.Text = status;
             _username = username;
+            server = new Server();
         }
 
         public void Update(GameTime gameTime) {

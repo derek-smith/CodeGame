@@ -115,8 +115,8 @@
     <Compile Include="Classes\Input\NameText.cs" />
     <Compile Include="Classes\Screens\LobbyScreen.cs" />
     <Compile Include="Classes\Screens\MenuScreen.cs" />
-    <Compile Include="Classes\Network\Client.cs" />
-    <Compile Include="Classes\Network\Server.cs" />
+    <Compile Include="Classes\Network\Client\Client.cs" />
+    <Compile Include="Classes\Network\Server\Server.cs" />
     <Compile Include="Classes\Screens\NameBox.cs" />
     <Compile Include="Classes\Screens\ScreenManager.cs" />
     <Compile Include="Classes\Screens\StatusBar.cs" />
