@@ -12,6 +12,75 @@ using CodeGame.Classes.Screens;
 using System.Text;
 
 namespace CodeGame.Classes.Input {
+
+    interface ITextBox {
+        int GetWidth();
+        int GetHeight();
+        void SetPosition(Vector2 newPosition);
+        void Draw(SpriteBatch batch);
+    }
+
+    class TextBox : ITextBox {
+        Vector2 boxPosition = Vector2.Zero;
+        Texture2D boxTexture = null;
+
+        SpriteFont font = null;
+
+        string text = "";
+        Vector2 textPosition = Vector2.Zero;
+
+        const int PAD = 10;
+
+        int width = -1;
+        int height = -1;
+
+        public TextBox(ScreenManager mgr, string text = "", int width = 200) {
+            font = mgr.Content.Load<SpriteFont>("ButtonFont");
+            textPosition = CalculateTextPosition();
+
+            float fontHeight = (font.MeasureString("DS")).Y;
+
+            this.text = text;
+            this.width = width;
+            height = PAD + (int)fontHeight + PAD;
+
+            Color[] pixels = new Color[width * height];
+            for (int i = 0; i < pixels.Length; i++) {
+                pixels[i] = Color.Gray * 0.2f;
+            }
+            boxTexture = new Texture2D(mgr.Game.GraphicsDevice, width, height);
+            boxTexture.SetData<Color>(pixels);
+        }
+
+        public void SetPosition(Vector2 newPosition) {
+            boxPosition = newPosition;
+            textPosition = CalculateTextPosition();
+        }
+
+
+        private Vector2 CalculateTextPosition() {
+            return new Vector2(boxPosition.X + PAD, boxPosition.Y + PAD);
+        }
+
+        public void Draw(SpriteBatch batch) {
+            batch.Draw(boxTexture, boxPosition, Color.White);
+            batch.DrawString(font, text, textPosition, Color.White);
+        }
+
+        public bool Update(GameTime gameTime) {
+
+            return false;
+        }
+
+        public int GetWidth() {
+            return width;
+        }
+
+        public int GetHeight() {
+            return height;
+        }
+    }
+    
     class NameText {
         InputManager _input;
         Texture2D _cursor;
@@ -30,7 +99,7 @@ namespace CodeGame.Classes.Input {
             _text = new StringBuilder();
             _textPosition = position;
             _color = color;
-            _cursor = screen.ContentManager.Load<Texture2D>("Cursor");
+            _cursor = screen.Content.Load<Texture2D>("Cursor");
             _cursorPosition = position;
             _cursorPosition.Y -= 6;
             UpdateCursor();

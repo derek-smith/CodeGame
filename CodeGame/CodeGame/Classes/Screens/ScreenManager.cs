@@ -27,7 +27,7 @@ namespace CodeGame.Classes.Screens {
         
         Screen _activeScreen = Screen.Menu;
 
-        RenderTarget2D _renderTo;
+        //RenderTarget2D _renderTo;
 
         public ScreenManager(Game game) {
             _g = game;
@@ -36,9 +36,9 @@ namespace CodeGame.Classes.Screens {
             _game = new GameScreen(this);
             _statusBar = new StatusBar(_g.Content, "Welcome to Code! the card game.");
 
-            int width = _g.GraphicsDevice.Viewport.Width;
-            int height = _g.GraphicsDevice.Viewport.Height;
-            _renderTo = new RenderTarget2D(_g.GraphicsDevice, width, height);
+            //int width = _g.GraphicsDevice.Viewport.Width;
+            //int height = _g.GraphicsDevice.Viewport.Height;
+            //_renderTo = new RenderTarget2D(_g.GraphicsDevice, width, height);
 
             _nameBox = new NameBox(this);
             _ipBox = new IPBox(this);
@@ -58,17 +58,17 @@ namespace CodeGame.Classes.Screens {
                     _game.Update(gameTime);
                     break;
             }
-            if (_nameBox.Active)
-                _nameBox.Update(gameTime);
-            else if (_ipBox.Active)
-                _ipBox.Update(gameTime);
+            //if (_nameBox.Active)
+            //    _nameBox.Update(gameTime);
+            //else if (_ipBox.Active)
+            //    _ipBox.Update(gameTime);
 
             _input.UpdateEnd();
 
         }
 
         public void Draw(GraphicsDevice graphics, SpriteBatch batch) {
-            _g.GraphicsDevice.SetRenderTarget(_renderTo);
+            //_g.GraphicsDevice.SetRenderTarget(_renderTo);
             
             switch (_activeScreen) {
                 case Screen.Menu:
@@ -81,29 +81,31 @@ namespace CodeGame.Classes.Screens {
                     _game.Draw(graphics, batch);
                     break;
             }
-            _statusBar.Draw(batch);
-            batch.End();
+            //_statusBar.Draw(batch);
+            //batch.End();
 
-            _g.GraphicsDevice.SetRenderTarget(null);
+            //_g.GraphicsDevice.SetRenderTarget(null);
 
-            batch.Begin();
-            batch.Draw(_renderTo, Vector2.Zero, Color.White);
+            //batch.Begin();
+            //batch.Draw(_renderTo, Vector2.Zero, Color.White);
 
-            if (_nameBox.Active)
-                _nameBox.Draw(batch);
-            else if (_ipBox.Active)
-                _ipBox.Draw(batch);
+            //if (_nameBox.Active)
+            //    _nameBox.Draw(batch);
+            //else if (_ipBox.Active)
+            //    _ipBox.Draw(batch);
 
-            batch.End();
+            //batch.End();
         }
 
         public InputManager InputManager { get { return _input; } }
-        public ContentManager ContentManager { get { return _g.Content; } }
+        public ContentManager Content { get { return _g.Content; } }
         public StatusBar StatusBar { get { return _statusBar; } }
         public Game Game { get { return _g; } }
         public NameBox NameBox { get { return _nameBox; } }
         public MenuScreen MenuScreen { get { return _menu; } }
         public IPBox IPBox { get { return _ipBox; } }
+        public int Width { get { return _g.GraphicsDevice.Viewport.Width; } }
+        public int Height { get { return _g.GraphicsDevice.Viewport.Height; } }
 
         public void Close() {
             _g.Exit();

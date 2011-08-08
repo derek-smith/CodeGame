@@ -22,13 +22,13 @@ namespace CodeGame.Classes.Screens {
         bool _active = false;
         SpriteFont _font;
         Color _clrTransparent = Color.White * 0.7f;
-        Button _btnOkay, _btnCancel;
+        //Button _btnOkay, _btnCancel;
         NameText _txtIP;
 
         public IPBox(ScreenManager manager) {
             _screen = manager;
-            _boxTexture = _screen.ContentManager.Load<Texture2D>("MessageBox");
-            _font = _screen.ContentManager.Load<SpriteFont>("MenuFont");
+            _boxTexture = _screen.Content.Load<Texture2D>("MessageBox");
+            _font = _screen.Content.Load<SpriteFont>("MenuFont");
 
             int width = _screen.Game.GraphicsDevice.Viewport.Width;
             int height = _screen.Game.GraphicsDevice.Viewport.Height;
@@ -40,8 +40,8 @@ namespace CodeGame.Classes.Screens {
             _blackTexture.SetData<Color>(pixels);
 
             _txtIP = new NameText(_screen, _font, new Vector2(140, 220), Color.Black);
-            _btnOkay = new Button(_screen, "Test-Normal", new Vector2(520, 420), Color.SaddleBrown, true);
-            _btnCancel = new Button(_screen, "Test-Normal", new Vector2(120, 420), Color.SaddleBrown, true);
+            //_btnOkay = new Button(_screen, "Test-Normal", new Vector2(520, 420), Color.SaddleBrown, true);
+            //_btnCancel = new Button(_screen, "Test-Normal", new Vector2(120, 420), Color.SaddleBrown, true);
         }
 
         public void Show() {
@@ -63,15 +63,15 @@ namespace CodeGame.Classes.Screens {
 
         public void Update(GameTime gameTime) {
             _txtIP.Update(gameTime);
-            _btnOkay.Update();
-            _btnCancel.Update();
+            //_btnOkay.Update();
+            //_btnCancel.Update();
 
-            if (_btnOkay.IsClicked()) {
-                Hide(true);
-            }
-            else if (_btnCancel.IsClicked()) {
-                Hide(false);
-            }
+            //if (_btnOkay.IsClicked()) {
+            //    Hide(true);
+            //}
+            //else if (_btnCancel.IsClicked()) {
+            //    Hide(false);
+            //}
         }
 
         public void Draw(SpriteBatch batch) {
@@ -79,8 +79,8 @@ namespace CodeGame.Classes.Screens {
             batch.Draw(_boxTexture, _boxPosition, Color.White);
             batch.DrawString(_font, "Type an IP:", new Vector2(120, 120), Color.Black);
 
-            _btnOkay.Draw(batch);
-            _btnCancel.Draw(batch);
+            //_btnOkay.Draw(batch);
+            //_btnCancel.Draw(batch);
             _txtIP.Draw(batch);
         }
 

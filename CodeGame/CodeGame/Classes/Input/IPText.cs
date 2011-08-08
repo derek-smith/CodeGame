@@ -30,7 +30,7 @@ namespace CodeGame.Classes.Input {
             _text = new StringBuilder();
             _textPosition = position;
             _color = color;
-            _cursor = screen.ContentManager.Load<Texture2D>("Cursor");
+            _cursor = screen.Content.Load<Texture2D>("Cursor");
             _cursorPosition = position;
             _cursorPosition.Y -= 6;
             UpdateCursor();

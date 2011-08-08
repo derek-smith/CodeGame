@@ -15,71 +15,150 @@ using CodeGame.Classes.Network.Server;
 
 namespace CodeGame.Classes.Screens {
     class MenuScreen {
-        ScreenManager _screen;
-        Button _hostButton, _joinButton, _quitButton, _changeButton;
-        SpriteFont _menuFont;
+        Button btnHost = null;
+        Button btnJoin = null;
+        Button btnQuit = null;
 
+        Box nameBox = null;
+        TextBox nameBoxText = null;
+        Button nameBoxCancel = null;
+        Button nameBoxOK = null;
+
+        Box ipBox = null;
+
+        bool boxHasFocus = false;
+
+        MouseState mouse = new MouseState();
+
+        ScreenManager mgr;
+        SpriteFont font;
+
+        // 
+        //
+        //
         string _name;
-        string _lblName;
-        Vector2 _lblNamePosition = new Vector2(350, 90);
         string _ipAddress;
 
-        public string PlayerName { get { return _name; } set { _name = value; _lblName = "Name: " + _name; } }
+        public string PlayerName { get { return _name; } set { _name = value; } }
         public string IPAddress { get { return _ipAddress; } set { _ipAddress = value; } }
 
-        public MenuScreen(ScreenManager screen) {
+        public MenuScreen(ScreenManager mgr) {
+
+            btnHost = new Button(mgr, new Vector2(20, 80), "Host");
+            btnJoin = new Button(mgr, new Vector2(20, 160), "Join");
+            btnQuit = new Button(mgr, new Vector2(20, 510), "Quit");
+
+            string boxText = "I know what you're thinking. \"Did he fire six shots or only five?\" Well, to tell you the truth, in all this excitement I kind of lost track myself. But being as this is a .44 Magnum, the most powerful handgun in the world, and would blow your head clean off, you've got to ask yourself one question: Do I feel lucky? Well, do ya, punk?";
+            int boxWidth = 500;
+            nameBoxCancel = new Button(mgr, "Back");
+            nameBoxOK = new Button(mgr, "Accept");
+            Button[] btns = new Button[] { nameBoxOK, nameBoxCancel };
+            nameBoxText = new TextBox(mgr, "Testing", boxWidth - 40);
+            // 
+            nameBox = new Box(mgr, boxText, boxWidth, btns, nameBoxText);
 
             PlayerName = "dsmith";
             IPAddress = "127.0.0.1";
 
-            _screen = screen;
-            _hostButton = new Button(_screen, "Host-Normal", new Vector2(20, 80), Color.Red, false);
-            _joinButton = new Button(_screen, "Join-Normal", new Vector2(20, 160), Color.Blue, false);
-            _quitButton = new Button(_screen, "Quit-Normal", new Vector2(20, 510), Color.Purple, false);
-            _changeButton = new Button(_screen, "Change-Normal", new Vector2(350, 160), Color.Yellow, false);
-            _menuFont = _screen.ContentManager.Load<SpriteFont>("MenuFont");
+            this.mgr = mgr;
+          
+            font = mgr.Content.Load<SpriteFont>("MenuFont");
         }
 
         public void Update(GameTime gameTime) {
-            UpdateControls();
-            HandleButtonActions();
+
+            mouse = Mouse.GetState();
+
+
+
+
+            if (boxHasFocus) {
+
+                nameBoxText.Update(gameTime);
+
+                if (HoveringOver(nameBoxCancel)) {
+                    if (ClickingOn(nameBoxCancel))
+                        boxHasFocus = false;
+                    else
+                        nameBoxCancel.IsHover = true;
+                }
+                else if (HoveringOver(nameBoxOK)) {
+                    if (ClickingOn(nameBoxOK))
+                        boxHasFocus = false;
+                    else
+                        nameBoxOK.IsHover = true;
+                }
+                else {
+                    nameBoxCancel.IsHover = false;
+                    nameBoxOK.IsHover = false;
+                }
+
+
+            }
+            else {
+
+                // Host button
+                if (HoveringOver(btnHost)) {
+                    if (ClickingOn(btnHost))
+                        boxHasFocus = true;
+                    else
+                        btnHost.IsHover = true;
+                }
+                // Join button
+                else if (HoveringOver(btnJoin)) {
+                    if (ClickingOn(btnJoin))
+                        ;// mouse click
+                    else
+                        btnJoin.IsHover = true;
+                }
+                // Quit button
+                else if (HoveringOver(btnQuit)) {
+                    if (ClickingOn(btnQuit))
+                        mgr.Close();
+                    else
+                        btnQuit.IsHover = true;
+                }
+                // Reset when not hovering
+                else {
+                    btnHost.IsHover = false;
+                    btnJoin.IsHover = false;
+                    btnQuit.IsHover = false;
+                }
+
+            }
         }
 
         public void Draw(GraphicsDevice graphics, SpriteBatch batch) {
-            graphics.Clear(Color.CornflowerBlue);
+
+            graphics.Clear(Color.Black);
             batch.Begin();
 
-            _hostButton.Draw(batch);
-            _joinButton.Draw(batch);
-            _quitButton.Draw(batch);
-            _changeButton.Draw(batch);
-            batch.DrawString(_menuFont, _lblName, _lblNamePosition, Color.Black);
+            btnHost.Draw(batch);
+            btnJoin.Draw(batch);
+            btnQuit.Draw(batch);
 
-            // Leave this out - is called in ScreenManager
-            //batch.End();
+            if (boxHasFocus) {
+                nameBox.Draw(batch);
+            }
+
+            batch.End();
+
         }
 
-        private void UpdateControls() {
-            _hostButton.Update();
-            _joinButton.Update();
-            _quitButton.Update();
-            _changeButton.Update();
+
+
+        private bool HoveringOver(Button btn) {
+            if (mouse.X >= btn.X1 && mouse.X <= btn.X2 && mouse.Y >= btn.Y1 && mouse.Y <= btn.Y2)
+                return true;
+            else
+                return false;
         }
 
-        private void HandleButtonActions() {
-            if (_quitButton.IsClicked()) {
-                _screen.Close();
-            }
-            else if (_changeButton.IsClicked()) {
-                _screen.NameBox.Show();
-            }
-            else if (_hostButton.IsClicked()) {
-                _screen.ChangeToLobbyScreen(_name);
-            }
-            else if (_joinButton.IsClicked()) {
-                //_screen.IPBox.Show();
-                Client c = new Client();
-            }
+        private bool ClickingOn(Button btn) {
+            if (mouse.LeftButton == ButtonState.Pressed)
+                return true;
+            else
+                return false;
         }
     }
 }
