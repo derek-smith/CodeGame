@@ -108,10 +108,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\Input\IPText.cs" />
+    <Compile Include="Classes\Input\TextBox.cs" />
     <Compile Include="Classes\Network\Commands.cs" />
     <Compile Include="Classes\Network\Server\Interpreter.cs" />
     <Compile Include="Classes\Network\Server\Transmitter.cs" />
     <Compile Include="Classes\Network\Server\Server.cs" />
+    <Compile Include="Classes\Screens\Box.cs" />
     <Compile Include="Classes\Screens\IPBox.cs" />
     <Compile Include="Classes\Screens\GameScreen.cs" />
     <Compile Include="Classes\Input\Button.cs" />
