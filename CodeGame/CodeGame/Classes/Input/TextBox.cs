@@ -59,7 +59,7 @@ namespace CodeGame.Classes.Input {
         int newDataOKTimer = 0;
 
         public TextBox(ScreenManager mgr, int width = 200) {
-            font = mgr.Content.Load<SpriteFont>("ButtonFont");
+            font = mgr.Content.Load<SpriteFont>("MainFont");
             textPosition = CalculateTextPosition();
 
             float fontHeight = (font.MeasureString("DS")).Y;

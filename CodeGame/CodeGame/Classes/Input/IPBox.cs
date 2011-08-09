@@ -42,7 +42,7 @@ namespace CodeGame.Classes.Screens {
         public bool EnterPressed { get { return enterPressed; } }
 
         public IPBox(ScreenManager mgr, int width = 400) {
-            font = mgr.Content.Load<SpriteFont>("ButtonFont");
+            font = mgr.Content.Load<SpriteFont>("MainFont");
             textPosition = CalculateTextPosition();
 
             float fontHeight = (font.MeasureString("DS")).Y;

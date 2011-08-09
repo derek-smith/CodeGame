@@ -22,7 +22,7 @@ namespace CodeGame.Classes.Screens {
 
         public StatusBar2(ScreenManager mgr) {
             this.mgr = mgr;
-            font = mgr.Content.Load<SpriteFont>("ButtonFont");
+            font = mgr.Content.Load<SpriteFont>("MainFont");
 
             int width = mgr.Width;
             int height = 40;

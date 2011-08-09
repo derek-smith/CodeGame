@@ -17,22 +17,25 @@ using CodeGame.Classes.Utilities;
 
 namespace CodeGame {
     public class Game : Microsoft.Xna.Framework.Game {
-        GraphicsDeviceManager _graphics;
-        SpriteBatch _spriteBatch;
+        GraphicsDeviceManager graphics;
+        SpriteBatch batch;
 
-        ScreenManager _manager;
+        ScreenManager mgr;
 
-#if FPS_COUNTER
-        FPS _fps;
-#endif
+        #if FPS_COUNTER
+        FPS fps;
+        #endif
 
         public Game() {
-            _graphics = new GraphicsDeviceManager(this);
-            _graphics.SynchronizeWithVerticalRetrace = false;
-            _graphics.PreferredBackBufferWidth = 800;
-            _graphics.PreferredBackBufferHeight = 600;
-            _graphics.ApplyChanges();
+
+            graphics = new GraphicsDeviceManager(this);
+            graphics.SynchronizeWithVerticalRetrace = false;
+            graphics.PreferredBackBufferWidth = 800;
+            graphics.PreferredBackBufferHeight = 600;
+            graphics.ApplyChanges();
+
             Content.RootDirectory = "Content";
+
             IsFixedTimeStep = false;
             IsMouseVisible = true;
         }
@@ -45,12 +48,13 @@ namespace CodeGame {
 
         protected override void LoadContent() {
             // Create a new SpriteBatch, which can be used to draw textures.
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
+            batch = new SpriteBatch(GraphicsDevice);
 
-            _manager = new ScreenManager(this);
-#if FPS_COUNTER
-            _fps = new FPS(Content, Window.ClientBounds, FPS.Display.BottomRight);
-#endif
+            mgr = new ScreenManager(this);
+            
+            #if FPS_COUNTER
+            fps = new FPS(Content, Window.ClientBounds, FPS.Display.BottomRight);
+            #endif
         }
 
         protected override void UnloadContent() {
@@ -62,11 +66,11 @@ namespace CodeGame {
             //if (Keyboard.GetState().IsKeyDown(Keys.Escape))
             //    this.Exit();
 
-            _manager.Update(gameTime);
+            mgr.Update(gameTime);
 
-#if FPS_COUNTER
-            _fps.Update(gameTime);
-#endif
+            #if FPS_COUNTER
+            fps.Update(gameTime);
+            #endif
 
             base.Update(gameTime);
         }
@@ -75,10 +79,11 @@ namespace CodeGame {
             // This line is very temporary
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            _manager.Draw(GraphicsDevice, _spriteBatch);
-#if FPS_COUNTER
-            _fps.Draw(_spriteBatch);
-#endif
+            mgr.Draw(GraphicsDevice, batch);
+            
+            #if FPS_COUNTER
+            fps.Draw(batch);
+            #endif
 
             base.Draw(gameTime);
         }

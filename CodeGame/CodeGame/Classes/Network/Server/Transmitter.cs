@@ -11,7 +11,57 @@ namespace CodeGame.Classes.Network.Server {
     class Transmitter2 {
         Thread thread = null;
         BinaryReader reader = null;
-        BinaryWriter writer = null;
+        BinaryWriter writer = null;     // will this even be used?
+        Interpreter2 interpreter = null;
+
+        int id = -1;
+
+        public BinaryWriter W { get { return writer; } }
+
+        public Transmitter2(Socket socket, Interpreter2 interpreter) {
+            NetworkStream stream = new NetworkStream(socket);
+            reader = new BinaryReader(stream);
+            writer = new BinaryWriter(stream);
+            this.interpreter = interpreter;
+        }
+
+        public void Start() {
+            thread = new Thread(TransmitterLoop);
+            thread.Start();
+        }
+
+        public void Stop() {
+            thread.Abort();
+        }
+
+        private void TransmitterLoop() {
+
+            int cmd = -1;
+
+            while (true) {
+
+                cmd = reader.ReadInt32();
+
+                switch ((Command)cmd) {
+
+                    case Command.JoinGame:
+
+                        string nick = reader.ReadString();
+                        id = interpreter.JoinGame(this, nick);
+                        break;
+
+                    case Command.ReadyYes:
+
+                        interpreter.ReadyYes(id);
+                        break;
+
+                    case Command.ReadyNo:
+
+                        interpreter.ReadyNo(id);
+                        break;
+                }
+            }
+        }
 
     }
 

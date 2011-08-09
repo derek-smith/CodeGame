@@ -36,24 +36,53 @@ namespace CodeGame.Classes.Network.Client {
             reader = new BinaryReader(stream);
             writer = new BinaryWriter(stream);
 
-            // First command sent by client
+            // First command sent
             writer.Write((int)Command.JoinGame);
             writer.Write(menuScreen.Nick);
 
             int cmd = -1;
 
             while (true) {
+                // Block here, we ALWAYS expect an int FIRST
                 cmd = reader.ReadInt32();
 
+                // Cast the int to a Command and switch
                 switch ((Command)cmd) {
 
+                    // This a confirmation that we joined the lobby
                     case Command.JoinGameSuccess:
 
+                        // We expect the number of players, next
                         int numPlayers = reader.ReadInt32();
                         for (int i = 0; i < numPlayers; i++) {
+                            // And loop, grabbing all players and
+                            // giving them to lobbyScreen to draw
                             string nick = reader.ReadString();
-                            lobbyScreen.AddNick(nick);
+                            lobbyScreen.PlayerJoin(nick);
                         }
+                        break;
+
+                    // A new player has joined
+                    case Command.PlayerJoin:
+
+                        // Grab new player's nick and give it
+                        // to lobbyScreen
+                        string newNick = reader.ReadString();
+                        lobbyScreen.PlayerJoin(newNick);
+                        break;
+
+                    // A player is ready to begin
+                    case Command.ReadyYes:
+
+                        int yesID = reader.ReadInt32();
+                        lobbyScreen.ReadyYes(yesID);
+                        break;
+
+                    // A player is NOT ready to begin
+                    case Command.ReadyNo:
+
+                        int noID = reader.ReadInt32();
+                        lobbyScreen.ReadyNo(noID);
                         break;
                 }
             }

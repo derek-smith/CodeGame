@@ -23,7 +23,7 @@ namespace CodeGame.Classes.Utilities {
 
         public FPS(ContentManager content, Rectangle window, Display display)
         {
-            _font = content.Load<SpriteFont>(@"Utilities\Tahoma");
+            _font = content.Load<SpriteFont>("MainFont");
             switch (display)
             {
                 case Display.TopLeft:

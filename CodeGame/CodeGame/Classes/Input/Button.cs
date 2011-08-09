@@ -33,7 +33,7 @@ namespace CodeGame.Classes.Input {
         public Button(ScreenManager screen, Vector2 position, string text) {
             //input = screen.InputManager;
 
-            font = screen.Content.Load<SpriteFont>("ButtonFont");
+            font = screen.Content.Load<SpriteFont>("MainFont");
 
             textureNormal = screen.Content.Load<Texture2D>("Button-Normal");
             textureHover = screen.Content.Load<Texture2D>("Button-Hover");

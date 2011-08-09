@@ -16,10 +16,19 @@ using System.Net;
 
 namespace CodeGame.Classes.Screens {
     class MenuScreen {
+
+        //
+        // Menu buttons
+        //
+
         Button btnHost = null;
         Button btnJoin = null;
         Button btnQuit = null;
         Button btnCredits = null;
+
+        //
+        // "Enter nickname" box and associated items
+        //
 
         Box nameBox = null;
         TextBox nameBoxText = null;
@@ -27,25 +36,46 @@ namespace CodeGame.Classes.Screens {
         Button nameBoxOK = null;
         bool nameBoxHasFocus = false;
 
+        //
+        // "Enter IP" box and associated items
+        //
+
         Box ipBox = null;
         IPBox ipBoxText = null;
         Button ipBoxCancel = null;
         Button ipBoxOK = null;
         bool ipBoxHasFocus = false;
 
+        //
+        // Credits box and associated items
+        //
+
         Box creditsBox = null;
         Button creditsBoxOK = null;
         bool creditsBoxHasFocus = false;
 
+        //
+        // Mouse-related globals
+        //
+
         MouseState mouse = new MouseState();
         MouseState prevMouse = new MouseState();
 
+        // Reference to the ScreenManager
+        // which gives us access to everything
         ScreenManager mgr = null;
+
+        // Font used for drawing strings
         SpriteFont font = null;
+
+        //
+        // Useful information: name and ip (for joining a game)
+        //
 
         string nick = "PlayerName";
         IPAddress ipAddress = IPAddress.None;
 
+        // Terrible hack - search this class for it
         bool joiningGame = false;
 
         public string Nick { get { return nick; } }
@@ -53,6 +83,7 @@ namespace CodeGame.Classes.Screens {
 
         public MenuScreen(ScreenManager mgr) {
 
+            // Create all the buttons
             btnHost = new Button(mgr, new Vector2(40, 80), "Host");
             btnJoin = new Button(mgr, new Vector2(40, 140), "Join");
             btnCredits = new Button(mgr, new Vector2(40, 200), "Credits");
@@ -95,71 +126,104 @@ namespace CodeGame.Classes.Screens {
             //
 
             if (creditsBoxHasFocus) {
+
+                //
+                // OK button
+                //
+
                 if (HoveringOver(creditsBoxOK)) {
                     if (ClickedOn(creditsBoxOK)) {
+                        // Clicked
                         creditsBoxHasFocus = false;
                     }
                     else {
+                        // Hovering
                         creditsBoxOK.IsHover = true;
                     }
                 }
                 else {
+                    // Neither clicking nor hovering
+                    // so lets reset the hover state
                     creditsBoxOK.IsHover = false;
                 }
             }
 
             //
-            // "Enter your IP" box has focus
+            // "Enter IP" box has focus
             //
 
             else if (ipBoxHasFocus) {
 
+                // Update box
                 bool timeToCloseBox = ipBoxText.Update(gameTime);
 
+                // This is true if:
+                // - the Enter or the Escape key was pressed
                 if (timeToCloseBox) {
+
+                    // Was it the Enter key?
                     if (ipBoxText.EnterPressed) {
-                        // Get IP address
+
+                        // Good IP address?
                         if (!IPAddress.TryParse(ipBoxText.GetText(), out ipAddress)) {
-                            // invalid IP
+                            // Failure: bad IP
                             ipAddress = IPAddress.None;
                         }
-                        // Close both boxes, starting with this one
+                        // Success
+
+                        // TODO: move forward!
+                        
+                        // Hide "Enter Nick" box
                         nameBoxHasFocus = false;
                     }
-                    // Escape was pressed so don't grab ip
+                    // Nope, it was the Escape key
                     else {
+                        // Prepare "Enter Nick" box to be shown again
+                        // (technicially, it's still visible, underneith)
                         nameBoxText.SetText(nick);
                     }
-                    // Close box
+                    // Hide "Enter IP" box (to show the "Enter Nick" box)
                     ipBoxHasFocus = false;
                 }
+
+                //
+                // Cancel button
+                //
+
                 else if (HoveringOver(ipBoxCancel)) {
                     if (ClickedOn(ipBoxCancel)) {
+                        // Click
                         ipBoxHasFocus = false;
                     }
                     else {
+                        // Hovering
                         ipBoxCancel.IsHover = true;
                     }
                 }
                 else if (HoveringOver(ipBoxOK)) {
                     if (ClickedOn(ipBoxOK)) {
+                        // Clicked
+
                         // Get IP address
 
                         nameBoxHasFocus = false;
                         ipBoxHasFocus = false;
                     }
                     else {
+                        // Hovering
                         ipBoxOK.IsHover = true;
                     }
                 }
                 else {
+                    // Neither clicking nor hovering
+                    // so lets reset the hover state
                     ipBoxCancel.IsHover = false;
                     ipBoxOK.IsHover = false;
                 }
             }
             
             //
-            // "Enter your nickname" box has focus
+            // "Enter Nick" box has focus
             //
 
             else if (nameBoxHasFocus) {
@@ -184,7 +248,7 @@ namespace CodeGame.Classes.Screens {
                         }
                         else {
                             // Hosting a game
-                            mgr.ChangeToLobbyScreen(nick);
+                            mgr.ChangeToLobbyScreen();
                         }
                     }
                     // Escape pressed
@@ -218,7 +282,7 @@ namespace CodeGame.Classes.Screens {
                         }
                         else {
                             // Hosting a game
-                            mgr.ChangeToLobbyScreen(nick);
+                            mgr.ChangeToLobbyScreen();
                         }
                         nameBoxHasFocus = false;
                     }

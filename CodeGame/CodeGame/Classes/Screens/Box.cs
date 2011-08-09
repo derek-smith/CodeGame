@@ -53,7 +53,7 @@ namespace CodeGame.Classes.Screens {
 
         public Box(ScreenManager mgr, string text, int width, Button[] buttons, ITextBox textbox) {
             // Load font
-            font = mgr.Content.Load<SpriteFont>("ButtonFont");
+            font = mgr.Content.Load<SpriteFont>("MainFont");
 
             textBox = textbox;
 

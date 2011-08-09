@@ -7,8 +7,12 @@ using System.Text;
 
 namespace CodeGame.Classes.Network {
     public enum Command {
-        Null, JoinGame, JoinGameSuccess, PlayerJoin, PlayerExit, GameBegin, DrawCard, YourTurn, PlayersTurn, CardPlayed
+        Null, JoinGame, JoinGameSuccess, ReadyYes, ReadyNo, PlayerJoin, PlayerExit, GameBegin, DrawCard, YourTurn, PlayersTurn, CardPlayed
     }
+
+
+
+
 
     class Commands {
         // This signals that something has changed.

@@ -15,12 +15,14 @@ using System.Threading;
 namespace CodeGame.Classes.Network.Server {
 
     class Listener2 {
+        Interpreter2 interpreter = null;
         Thread thread = null;
 
         public Listener2() {
         }
 
         public void Start() {
+            interpreter = new Interpreter2();
             thread = new Thread(ListenerLoop);
             thread.Start();
         }
@@ -37,6 +39,10 @@ namespace CodeGame.Classes.Network.Server {
             while (true) {
                 // Blocks until an incoming connection connects
                 Socket transmitterSocket = socket.Accept();
+
+                // Create new transmitter and assign socket
+                Transmitter2 transmitter = new Transmitter2(transmitterSocket, interpreter);
+                transmitter.Start();
             }
         }
     }
