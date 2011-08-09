@@ -69,17 +69,27 @@ namespace CodeGame.Classes.Screens {
         SpriteFont font = null;
 
         //
-        // Useful information: name and ip (for joining a game)
+        // Public information: name (and ip if joining a game)
         //
 
         string nick = "PlayerName";
         IPAddress ipAddress = IPAddress.None;
 
+        //
         // Terrible hack - search this class for it
+        //
         bool joiningGame = false;
+
+        //
+        // Properties
+        //
 
         public string Nick { get { return nick; } }
         public IPAddress IPAddress { get { return ipAddress; } }
+
+        //
+        // Constructor
+        //
 
         public MenuScreen(ScreenManager mgr) {
 
@@ -117,8 +127,13 @@ namespace CodeGame.Classes.Screens {
             //font = mgr.Content.Load<SpriteFont>("MenuFont");
         }
 
+        //
+        // Update
+        //
+
         public void Update(GameTime gameTime) {
 
+            // Save the mouse's state
             mouse = Mouse.GetState();
 
             //
@@ -141,6 +156,11 @@ namespace CodeGame.Classes.Screens {
                         creditsBoxOK.IsHover = true;
                     }
                 }
+
+                //
+                // Else
+                //
+
                 else {
                     // Neither clicking nor hovering
                     // so lets reset the hover state
@@ -158,7 +178,7 @@ namespace CodeGame.Classes.Screens {
                 bool timeToCloseBox = ipBoxText.Update(gameTime);
 
                 // This is true if:
-                // - the Enter or the Escape key was pressed
+                // - the Enter or Escape key was pressed
                 if (timeToCloseBox) {
 
                     // Was it the Enter key?
@@ -171,12 +191,17 @@ namespace CodeGame.Classes.Screens {
                         }
                         // Success
 
-                        // TODO: move forward!
+                        //
+                        // Join a game
+                        //
                         
+
+
                         // Hide "Enter Nick" box
+                        // ("Enter IP" box is hidden next, jump down and see)
                         nameBoxHasFocus = false;
                     }
-                    // Nope, it was the Escape key
+                    // Escape key pressed
                     else {
                         // Prepare "Enter Nick" box to be shown again
                         // (technicially, it's still visible, underneith)
@@ -192,7 +217,10 @@ namespace CodeGame.Classes.Screens {
 
                 else if (HoveringOver(ipBoxCancel)) {
                     if (ClickedOn(ipBoxCancel)) {
-                        // Click
+                        // Clicked
+
+                        // Hide "Enter IP" box so the "Enter Nick" box will show again
+                        // (because it's hidden while "Enter IP" box is visible)
                         ipBoxHasFocus = false;
                     }
                     else {
@@ -200,20 +228,42 @@ namespace CodeGame.Classes.Screens {
                         ipBoxCancel.IsHover = true;
                     }
                 }
+
+                //
+                // OK button
+                //
+
                 else if (HoveringOver(ipBoxOK)) {
                     if (ClickedOn(ipBoxOK)) {
                         // Clicked
 
-                        // Get IP address
+                        // Good IP address?
+                        if (!IPAddress.TryParse(ipBoxText.GetText(), out ipAddress)) {
+                            // Failure: bad IP
+                            ipAddress = IPAddress.None;
+                        }
+                        // Success
 
+                        // Hide "Enter IP" and "Enter Nick" boxes
                         nameBoxHasFocus = false;
                         ipBoxHasFocus = false;
+
+                        //
+                        // Join a game
+                        //
+
+                        
                     }
                     else {
                         // Hovering
                         ipBoxOK.IsHover = true;
                     }
                 }
+
+                //
+                // Else
+                //
+
                 else {
                     // Neither clicking nor hovering
                     // so lets reset the hover state
@@ -228,68 +278,124 @@ namespace CodeGame.Classes.Screens {
 
             else if (nameBoxHasFocus) {
 
+                // Update box
                 bool timeToCloseBox = nameBoxText.Update(gameTime);
 
+                // This is true if:
+                // - the Enter or Escape key was pressed
                 if (timeToCloseBox) {
+
+                    // Was it the Enter key?
                     if (nameBoxText.EnterPressed) {
+
+                        // Save new nick
                         nick = nameBoxText.GetText();
-                        // Does the "Enter IP" box need displaying?
-                        // aka Joining a game
+
+                        //
+                        // Are we joining a game? Then show "Enter IP" box next
+                        //
+
                         if (joiningGame) {
+
                             if (ipAddress == IPAddress.None) {
+                                // Prepare "Enter IP" box to be shown next
                                 ipBoxText.SetText("");
                             }
                             else {
+                                // Prepare "Enter IP" box to be shown next
                                 ipBoxText.SetText(ipAddress.ToString());
                             }
-                            //ClearMouse();
+                            // Show "Enter IP" box
                             ipBoxHasFocus = true;
+
+                            // Return so "Enter Nick" box remains visible
+                            // but hidden by "Enter IP" box
                             return;
                         }
+
+                        //
+                        // Hosting a game
+                        //
+
                         else {
-                            // Hosting a game
                             mgr.ChangeToLobbyScreen();
                         }
                     }
-                    // Escape pressed
-                    nameBoxHasFocus = false;
+                    else {
+                        // Escape key pressed
+                        nameBoxHasFocus = false;
+                    }
                 }
+
+                //
+                // Cancel button
+                //
+
                 else if (HoveringOver(nameBoxCancel)) {
                     if (ClickedOn(nameBoxCancel)) {
+                        // Clicked
                         nameBoxHasFocus = false;
                     }
                     else
+                        // Hovering
                         nameBoxCancel.IsHover = true;
                 }
+
+                //
+                // OK button
+                //
+
                 else if (HoveringOver(nameBoxOK)) {
                     if (ClickedOn(nameBoxOK)) {
+                        // Clicked
+
+                        // Save new nick
                         nick = nameBoxText.GetText();
-                        // Does the "Enter IP" box need displaying?
-                        // aka Joining a game
+
+                        //
+                        // Are we joining a game? Then show "Enter IP" box next
+                        //
+
                         if (joiningGame) {
+
                             if (ipAddress == IPAddress.None) {
+                                // Prepare "Enter IP" box to be shown next
                                 ipBoxText.SetText("");
                             }
                             else {
+                                // Prepare "Enter IP" box to be shown next
                                 ipBoxText.SetText(ipAddress.ToString());
                             }
+                            // Show "Enter IP" box
                             ipBoxHasFocus = true;
+
                             // This is needed because the "Enter IP" box thinks
                             // it's being clicked as the "Accept" btn on the
-                            // "Enter nick" box is clicked
+                            // "Enter Nick" box is clicked (just another hack!)
                             ResetMouse();
-                            return;
                         }
+                        
+                        //
+                        // Hosting a game
+                        //
+
                         else {
-                            // Hosting a game
+                            // Hide "Enter Nick" box
+                            nameBoxHasFocus = false;
+
                             mgr.ChangeToLobbyScreen();
                         }
-                        nameBoxHasFocus = false;
                     }
                     else {
+                        // Hovering
                         nameBoxOK.IsHover = true;
                     }
                 }
+
+                //
+                // Else
+                //
+
                 else {
                     nameBoxCancel.IsHover = false;
                     nameBoxOK.IsHover = false;
@@ -302,52 +408,77 @@ namespace CodeGame.Classes.Screens {
 
             else {
 
+                //
                 // Host button
+                //
+
                 if (HoveringOver(btnHost)) {
                     if (ClickedOn(btnHost)) {
+                        // Clicked
                         nameBoxText.SetText(nick);
                         joiningGame = false;
                         nameBoxHasFocus = true;
                     }
                     else {
+                        // Hovering
                         btnHost.IsHover = true;
                     }
                 }
 
+                //
                 // Join button
+                //
+
                 else if (HoveringOver(btnJoin)) {
                     if (ClickedOn(btnJoin)) {
+                        // Clicked
                         nameBoxText.SetText(nick);
                         joiningGame = true;
                         nameBoxHasFocus = true;
                     }
                     else {
+                        // Hovering
                         btnJoin.IsHover = true;
                     }
                 }
 
+                //
                 // Credits button
+                //
+
                 else if (HoveringOver(btnCredits)) {
                     if (ClickedOn(btnCredits)) {
+                        // Clicked
                         creditsBoxHasFocus = true;
                     }
                     else {
+                        // Hovering
                         btnCredits.IsHover = true;
                     }
                 }
 
+                //
                 // Quit button
+                //
+
                 else if (HoveringOver(btnQuit)) {
                     if (ClickedOn(btnQuit)) {
+                        // Clicked
                         mgr.Close();
                     }
                     else {
+                        // Hovering
                         btnQuit.IsHover = true;
                     }
                 }
 
-                // Reset when not hovering
+                //
+                // Else
+                //
+
                 else {
+                    // Neither clicking nor hovering
+                    // so lets reset the hover state
                     btnHost.IsHover = false;
                     btnJoin.IsHover = false;
                     btnCredits.IsHover = false;
@@ -355,6 +486,7 @@ namespace CodeGame.Classes.Screens {
                 }
             }
 
+            // Save the mouse's state for next Update()
             prevMouse = mouse;
         }
 
@@ -382,8 +514,6 @@ namespace CodeGame.Classes.Screens {
 
         }
 
-
-
         private bool HoveringOver(Button btn) {
             if (mouse.X >= btn.X1 && mouse.X <= btn.X2 && mouse.Y >= btn.Y1 && mouse.Y <= btn.Y2)
                 return true;
@@ -392,12 +522,6 @@ namespace CodeGame.Classes.Screens {
         }
 
         private bool ClickedOn(Button btn) {
-            //if (mouse.LeftButton == ButtonState.Pressed &&
-            //    prevMouse.LeftButton == ButtonState.Released)
-            //    return true;
-            //else
-            //    return false;
-
             if (prevMouse.LeftButton == ButtonState.Pressed &&
                 mouse.LeftButton == ButtonState.Released)
                 return true;
