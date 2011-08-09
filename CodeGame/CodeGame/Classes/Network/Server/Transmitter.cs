@@ -7,6 +7,17 @@ using System.Net;
 using System.Net.Sockets;
 
 namespace CodeGame.Classes.Network.Server {
+
+    class Transmitter2 {
+        Thread thread = null;
+        BinaryReader reader = null;
+        BinaryWriter writer = null;
+
+    }
+
+
+
+
     class Transmitter {
         BinaryReader _reader = null;
         BinaryWriter _writer = null;

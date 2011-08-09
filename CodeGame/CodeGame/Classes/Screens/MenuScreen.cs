@@ -48,6 +48,9 @@ namespace CodeGame.Classes.Screens {
 
         bool joiningGame = false;
 
+        public string Nick { get { return nick; } }
+        public IPAddress IPAddress { get { return ipAddress; } }
+
         public MenuScreen(ScreenManager mgr) {
 
             btnHost = new Button(mgr, new Vector2(40, 80), "Host");

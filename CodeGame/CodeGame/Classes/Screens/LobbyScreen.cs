@@ -46,6 +46,10 @@ namespace CodeGame.Classes.Screens {
             //_listener.Start();
         }
 
+        public void AddNick(string nick) {
+            nicks.Add(nick);
+        }
+
         public void Update(GameTime gameTime) {
 
             mouse = Mouse.GetState();

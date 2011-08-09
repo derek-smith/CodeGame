@@ -15,17 +15,17 @@ namespace CodeGame.Classes.Screens {
     enum Screen { Menu, Lobby, Game }
 
     class ScreenManager {
-        Game _g;
+        Game game;
 
         //InputManager _input = new InputManager();
-        MenuScreen _menu;
-        LobbyScreen _lobby;
-        GameScreen _game;
+        MenuScreen menuScreen;
+        LobbyScreen lobbyScreen;
+        GameScreen gameScreen;
         //StatusBar _statusBar;
         //NameBox _nameBox;
         //IPBox _ipBox;
         
-        Screen _activeScreen = Screen.Menu;
+        Screen activeScreen = Screen.Menu;
 
         //RenderTarget2D _renderTo;
 
@@ -33,10 +33,10 @@ namespace CodeGame.Classes.Screens {
         string statusBarStartText = "So you wanna play my game, huh? Swwweeeeeet!";
 
         public ScreenManager(Game game) {
-            _g = game;
-            _menu = new MenuScreen(this);
-            _lobby = new LobbyScreen(this);
-            _game = new GameScreen(this);
+            this.game = game;
+            menuScreen = new MenuScreen(this);
+            lobbyScreen = new LobbyScreen(this);
+            gameScreen = new GameScreen(this);
             //_statusBar = new StatusBar(_g.Content, "Welcome to Code! the card game.");
 
             //int width = _g.GraphicsDevice.Viewport.Width;
@@ -53,15 +53,15 @@ namespace CodeGame.Classes.Screens {
         public void Update(GameTime gameTime) {
 
             //_input.UpdateBegin();
-            switch (_activeScreen) {
+            switch (activeScreen) {
                 case Screen.Menu:
-                    _menu.Update(gameTime);
+                    menuScreen.Update(gameTime);
                     break;
                 case Screen.Lobby:
-                    _lobby.Update(gameTime);
+                    lobbyScreen.Update(gameTime);
                     break;
                 case Screen.Game:
-                    _game.Update(gameTime);
+                    gameScreen.Update(gameTime);
                     break;
             }
             //if (_nameBox.Active)
@@ -76,15 +76,15 @@ namespace CodeGame.Classes.Screens {
         public void Draw(GraphicsDevice graphics, SpriteBatch batch) {
             //_g.GraphicsDevice.SetRenderTarget(_renderTo);
             
-            switch (_activeScreen) {
+            switch (activeScreen) {
                 case Screen.Menu:
-                    _menu.Draw(graphics, batch);
+                    menuScreen.Draw(graphics, batch);
                     break;
                 case Screen.Lobby:
-                    _lobby.Draw(graphics, batch);
+                    lobbyScreen.Draw(graphics, batch);
                     break;
                 case Screen.Game:
-                    _game.Draw(graphics, batch);
+                    gameScreen.Draw(graphics, batch);
                     break;
             }
 
@@ -109,32 +109,34 @@ namespace CodeGame.Classes.Screens {
         }
 
         //public InputManager InputManager { get { return _input; } }
-        public ContentManager Content { get { return _g.Content; } }
+        public ContentManager Content { get { return game.Content; } }
         public StatusBar2 StatusBar { get { return statusBar; } }
-        public Game Game { get { return _g; } }
+        public Game Game { get { return game; } }
         //public NameBox NameBox { get { return _nameBox; } }
-        public MenuScreen MenuScreen { get { return _menu; } }
+        public MenuScreen MenuScreen { get { return menuScreen; } }
+        public LobbyScreen LobbyScreen { get { return lobbyScreen; } }
+        public GameScreen GameScreen { get { return gameScreen; } }
         //public IPBox IPBox { get { return _ipBox; } }
-        public int Width { get { return _g.GraphicsDevice.Viewport.Width; } }
-        public int Height { get { return _g.GraphicsDevice.Viewport.Height; } }
+        public int Width { get { return game.GraphicsDevice.Viewport.Width; } }
+        public int Height { get { return game.GraphicsDevice.Viewport.Height; } }
 
         public void Close() {
-            _g.Exit();
+            game.Exit();
         }
 
         // Change from Menu to Lobby
         public void ChangeToLobbyScreen(string nick) {
             //_lobby.ChangeFromMenuScreen("Waiting for players...", username);
             statusBar.Text = "Waiting for players...";
-            _lobby.ChangeFromMenuScreen(nick);
-            _activeScreen = Screen.Lobby;
+            lobbyScreen.ChangeFromMenuScreen(nick);
+            activeScreen = Screen.Lobby;
         }
 
         // Change from Lobby to Menu
         public void ChangeToMenuScreen() {
             //_statusBar.Text = "Welcome to Code!";
             statusBar.Text = statusBarStartText;
-            _activeScreen = Screen.Menu;
+            activeScreen = Screen.Menu;
         }
     }
 }
