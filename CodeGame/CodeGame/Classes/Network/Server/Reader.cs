@@ -5,6 +5,7 @@ using System.Threading;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Diagnostics;
 
 namespace CodeGame.Classes.Network.Server {
 
@@ -40,7 +41,13 @@ namespace CodeGame.Classes.Network.Server {
 
             while (true) {
 
-                cmd = reader.ReadInt32();
+                try {
+                    cmd = reader.ReadInt32();
+                }
+                catch (Exception ex) {
+                    Debug.WriteLine("Reader Exception:\n" + ex.Message);
+                    return;
+                }
 
                 switch ((Command)cmd) {
 

@@ -45,6 +45,9 @@ namespace CodeGame.Classes.Screens {
 
         public void SetClient(Client client) {
             this.client = client;
+
+            if (mgr.MenuScreen.IsHost)
+                showStartButton = true;
         }
 
         //
@@ -116,7 +119,7 @@ namespace CodeGame.Classes.Screens {
             // Start button
             //
 
-            else if (showStartButton && HoveringOver(btnStart)) {
+            else if (showStartButton && AllPlayersReady() && HoveringOver(btnStart)) {
                 if (ClickedOn(btnStart)) {
                     // Clicked
                     ;
@@ -174,7 +177,7 @@ namespace CodeGame.Classes.Screens {
                 btnReady.Draw(batch);
             }
 
-            if (showStartButton) {
+            if (showStartButton && AllPlayersReady()) {
                 btnStart.Draw(batch);
             }
 
@@ -185,6 +188,16 @@ namespace CodeGame.Classes.Screens {
         //
         // Helper methods
         //
+
+        private bool AllPlayersReady() {
+            if (ready.Count < 2) return false;
+
+            for (int i = 0; i < ready.Count; i++) {
+                if (!ready[i]) return false;
+            }
+
+            return true;
+        }
 
         private bool HoveringOver(Button btn) {
             if (mouse.X >= btn.X1 && mouse.X <= btn.X2 && mouse.Y >= btn.Y1 && mouse.Y <= btn.Y2)

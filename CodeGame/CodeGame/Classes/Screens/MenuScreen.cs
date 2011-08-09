@@ -66,11 +66,15 @@ namespace CodeGame.Classes.Screens {
         ScreenManager mgr = null;
 
         //
-        // Public information: name (and ip if joining a game)
+        // Public information:
+        // - name
+        // - (and ip if joining a game)
+        // - is this the host?
         //
 
         string nick = "PlayerName";
         IPAddress ipAddress = IPAddress.None;
+        bool isHost = false;
 
         //
         // Terrible hack - search this class for it
@@ -83,6 +87,7 @@ namespace CodeGame.Classes.Screens {
 
         public string Nick { get { return nick; } }
         public IPAddress IPAddress { get { return ipAddress; } }
+        public bool IsHost { get { return isHost; } }
 
         //
         // Constructor
@@ -317,6 +322,9 @@ namespace CodeGame.Classes.Screens {
                             // Connect to local server
                             ipAddress = IPAddress.Loopback;
 
+                            // Set this player as the host
+                            isHost = true;
+
                             mgr.ChangeToLobbyScreen(true);
                         }
                     }
@@ -384,6 +392,9 @@ namespace CodeGame.Classes.Screens {
 
                             // Connect to local server
                             ipAddress = IPAddress.Loopback;
+
+                            // Set this player as the host
+                            isHost = true;
 
                             mgr.ChangeToLobbyScreen(true);
                         }
