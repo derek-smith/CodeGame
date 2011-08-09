@@ -34,6 +34,8 @@ namespace CodeGame.Classes.Screens {
 
         Client client = null;
 
+        public string[] Nicks { get { return nicks.ToArray(); } }
+
         public LobbyScreen(ScreenManager mgr) {
             this.mgr = mgr;
             font = mgr.Content.Load<SpriteFont>("MainFont");
