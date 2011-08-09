@@ -23,15 +23,28 @@ namespace CodeGame.Classes.Screens {
         MouseState prevMouse = new MouseState();
 
         Button btnBack = null;
+        Button btnReady = null;
+        Button btnStart = null;
 
         List<string> nicks = new List<string>(4);
         List<bool> ready = new List<bool>(4);
+
+        bool showReadyButton = false;
+        bool showStartButton = false;
+
+        Client client = null;
 
         public LobbyScreen(ScreenManager mgr) {
             this.mgr = mgr;
             font = mgr.Content.Load<SpriteFont>("MainFont");
 
             btnBack = new Button(mgr, new Vector2(40, 600 - 40 - 49), "Back");
+            btnReady = new Button(mgr, new Vector2(mgr.Width - 40 - Button.Width, 600 - 40 - 49), "Ready");
+            btnStart = new Button(mgr, new Vector2(mgr.Width - (40 * 2) - (Button.Width * 2), 600 - 40 - 49), "Start");
+        }
+
+        public void SetClient(Client client) {
+            this.client = client;
         }
 
         //
@@ -40,6 +53,8 @@ namespace CodeGame.Classes.Screens {
 
         public void PlayerJoin(string nick) {
             nicks.Add(nick);
+            ready.Add(false);
+            showReadyButton = true;
         }
 
         //
@@ -81,11 +96,52 @@ namespace CodeGame.Classes.Screens {
                     btnBack.IsHover = true;
                 }
             }
+
+            //
+            // Ready button
+            //
+
+            else if (showReadyButton && HoveringOver(btnReady)) {
+                if (ClickedOn(btnReady)) {
+                    // Clicked
+                    client.Ready();
+                }
+                else {
+                    // Hovering
+                    btnReady.IsHover = true;
+                }
+            }
+
+            //
+            // Start button
+            //
+
+            else if (showStartButton && HoveringOver(btnStart)) {
+                if (ClickedOn(btnStart)) {
+                    // Clicked
+                    ;
+                }
+                else {
+                    // Hovering
+                    btnStart.IsHover = true;
+                }
+            }
+
+
+            //
+            // Else
+            //
+
             else {
                 // Neither clicking nor hovering
                 // so lets reset the hover state
                 btnBack.IsHover = false;
+                btnReady.IsHover = false;
+                btnStart.IsHover = false;
             }
+
+            // Save the mouse's state for next Update()
+            prevMouse = mouse;
         }
 
         //
@@ -103,8 +159,25 @@ namespace CodeGame.Classes.Screens {
                 batch.DrawString(font, nicks[i], new Vector2(40, (i * 30) + 90), Color.White);
             }
 
-            // Let back button draw itself
+            // Draw status (if ready or not)
+            for (int i = 0; i < ready.Count; i++) {
+                Color color = Color.Yellow;
+                if (!ready[i]) color = Color.Gray;
+
+                batch.DrawString(font, "Ready", new Vector2(250, (i * 30) + 90), color);
+            }
+
+            // Let Back button draw itself
             btnBack.Draw(batch);
+
+            if (showReadyButton) {
+                btnReady.Draw(batch);
+            }
+
+            if (showStartButton) {
+                btnStart.Draw(batch);
+            }
+
 
             batch.End();
         }

@@ -28,8 +28,8 @@ namespace CodeGame.Classes.Screens {
         StatusBar2 statusBar = null;
         string statusBarStartText = "So you want to play my game, huh? Swwweeeeeet!";
 
-        Listener2 listener = null;
-        Client2 client = null;
+        Listener listener = null;
+        Client client = null;
 
         public ScreenManager(Game game) {
             this.game = game;
@@ -82,6 +82,7 @@ namespace CodeGame.Classes.Screens {
         public MenuScreen MenuScreen { get { return menuScreen; } }
         public LobbyScreen LobbyScreen { get { return lobbyScreen; } }
         public GameScreen GameScreen { get { return gameScreen; } }
+        public Client Client { get { return client; } }
         public int Width { get { return game.GraphicsDevice.Viewport.Width; } }
         public int Height { get { return game.GraphicsDevice.Viewport.Height; } }
 
@@ -98,11 +99,12 @@ namespace CodeGame.Classes.Screens {
             activeScreen = Screen.Lobby;
 
             if (hosting) {
-                listener = new Listener2();
+                listener = new Listener();
                 listener.Start();
             }
 
-            client = new Client2(this);
+            client = new Client(this);
+            lobbyScreen.SetClient(client);
         }
 
         //

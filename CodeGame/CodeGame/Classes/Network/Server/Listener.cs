@@ -14,16 +14,17 @@ using System.Threading;
 
 namespace CodeGame.Classes.Network.Server {
 
-    class Listener2 {
-        Interpreter2 interpreter = null;
+    class Listener {
+        Interpreter interpreter = null;
         Thread thread = null;
 
-        public Listener2() {
+        public Listener() {
         }
 
         public void Start() {
-            interpreter = new Interpreter2();
+            interpreter = new Interpreter();
             thread = new Thread(ListenerLoop);
+            thread.IsBackground = true;
             thread.Start();
         }
 
@@ -33,7 +34,7 @@ namespace CodeGame.Classes.Network.Server {
 
         public void ListenerLoop() {
             Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            socket.Bind(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 12345));
+            socket.Bind(new IPEndPoint(IPAddress.Any, 12345));
             socket.Listen(4);
 
             while (true) {

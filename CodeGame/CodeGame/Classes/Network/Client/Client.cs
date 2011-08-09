@@ -10,7 +10,7 @@ using CodeGame.Classes.Screens;
 
 namespace CodeGame.Classes.Network.Client {
 
-    class Client2 {
+    class Client {
         MenuScreen menuScreen = null;
         LobbyScreen lobbyScreen = null;
         GameScreen gameScreen = null;
@@ -21,13 +21,14 @@ namespace CodeGame.Classes.Network.Client {
         //
         // Constructor
         //
-        
-        public Client2(ScreenManager mgr) {
+
+        public Client(ScreenManager mgr) {
             menuScreen = mgr.MenuScreen;
             lobbyScreen = mgr.LobbyScreen;
             gameScreen = mgr.GameScreen;
 
             Thread thread = new Thread(ClientLoop);
+            thread.IsBackground = true;
             thread.Start();
         }
 
@@ -36,7 +37,7 @@ namespace CodeGame.Classes.Network.Client {
         //
 
         private void ClientLoop() {
-            
+
             Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             socket.Connect(new IPEndPoint(menuScreen.IPAddress, 12345));
 
@@ -96,46 +97,9 @@ namespace CodeGame.Classes.Network.Client {
                 }
             }
         }
-    }
 
-    class Client {
-        Commands _commands = new Commands();
-        BinaryWriter _writer = null;
-        List<string> _playerNames = new List<string>(4);
-        List<int> _playerIDs = new List<int>(4);
-
-        public Client(string nickname) {
-            Thread clientThread = new Thread(Run);
-            clientThread.Start(nickname);
-        }
-
-        // Todo: Add error handling
-        private void Run(object o) {
-            string nickname = (string)o;
-            Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            socket.Connect(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 12345));
-            NetworkStream stream = new NetworkStream(socket);
-            BinaryReader reader = new BinaryReader(stream);
-            _writer = new BinaryWriter(stream);
-
-            _writer.Write((int)Command.JoinGame);
-            _writer.Write(nickname);
-
-            int cmd = -1;
-
-            while (true) {
-                cmd = reader.ReadInt32();
-
-                switch ((Command)cmd) {
-                    case Command.JoinGameSuccess:
-                        int numPlayers = reader.ReadInt32();
-                        for (int i = 0; i < numPlayers; i++) {
-                            string name = reader.ReadString();
-                            _playerNames.Add(name);
-                        }
-                        break;
-                }
-            }
+        public void Ready() {
+            writer.Write((int)Command.Ready);
         }
     }
 }

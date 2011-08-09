@@ -12,13 +12,13 @@ namespace CodeGame.Classes.Network.Server {
         Thread thread = null;
         BinaryReader reader = null;
         BinaryWriter writer = null;
-        Interpreter2 interpret = null;
+        Interpreter interpret = null;
 
         int id = -1;
 
         public BinaryWriter W { get { return writer; } }
 
-        public Reader(Socket socket, Interpreter2 interpreter) {
+        public Reader(Socket socket, Interpreter interpreter) {
             NetworkStream stream = new NetworkStream(socket);
             reader = new BinaryReader(stream);
             writer = new BinaryWriter(stream);
@@ -26,7 +26,7 @@ namespace CodeGame.Classes.Network.Server {
         }
 
         public void Start() {
-            thread = new Thread(TransmitterLoop);
+            thread = new Thread(ReaderLoop);
             thread.Start();
         }
 
@@ -34,7 +34,7 @@ namespace CodeGame.Classes.Network.Server {
             thread.Abort();
         }
 
-        private void TransmitterLoop() {
+        private void ReaderLoop() {
 
             int cmd = -1;
 
@@ -50,80 +50,12 @@ namespace CodeGame.Classes.Network.Server {
                         id = interpret.JoinGame(this, nick);
                         break;
 
-                    case Command.ReadyYes:
+                    case Command.Ready:
 
-                        interpret.ReadyYes(id);
-                        break;
-
-                    case Command.ReadyNo:
-
-                        interpret.ReadyNo(id);
+                        interpret.Ready(id);
                         break;
                 }
             }
-        }
-
-    }
-
-
-
-
-    class Transmitter {
-        BinaryReader _reader = null;
-        BinaryWriter _writer = null;
-        Thread _thread = null;
-        Interpreter _interpreter = null;
-
-        int _id = -1;
-        string _name = string.Empty;
-
-        public Transmitter(Interpreter interpreter, Socket socket) {
-            _interpreter = interpreter;
-            _reader = new BinaryReader(new NetworkStream(socket));
-            _writer = new BinaryWriter(new NetworkStream(socket));
-
-            _thread = new Thread(Run);
-            _thread.Start();
-        }
-
-        public void Stop() {
-            _thread.Abort();
-        }
-
-        private void Run() {
-            int cmd = -1;
-
-            while (true) {
-                cmd = _reader.ReadInt32();
-
-                switch ((Command)cmd) {
-                    
-                    case Command.JoinGame:
-
-                        _name = _reader.ReadString();
-                        //_id = _interpreter.RegisterTransmitter(this);
-                        var tx = _interpreter.GetTransmitters();
-                        Write(tx.Length);
-                        foreach (var t in tx) {
-                            
-                        }
-                        
-
-                        break;
-                }
-            }
-        }
-
-        public void Write(Command cmd) {
-            _writer.Write((int)cmd);
-        }
-
-        public void Write(string s) {
-            _writer.Write(s);
-        }
-
-        public void Write(int i) {
-            _writer.Write(i);
         }
     }
 }

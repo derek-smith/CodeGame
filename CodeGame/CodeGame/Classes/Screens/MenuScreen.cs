@@ -314,6 +314,9 @@ namespace CodeGame.Classes.Screens {
                         //
 
                         else {
+                            // Connect to local server
+                            ipAddress = IPAddress.Loopback;
+
                             mgr.ChangeToLobbyScreen(true);
                         }
                     }
@@ -378,6 +381,9 @@ namespace CodeGame.Classes.Screens {
                         else {
                             // Hide "Enter Nick" box
                             nameBoxHasFocus = false;
+
+                            // Connect to local server
+                            ipAddress = IPAddress.Loopback;
 
                             mgr.ChangeToLobbyScreen(true);
                         }
