@@ -13,7 +13,7 @@ using CodeGame.Classes.Screens;
 
 namespace CodeGame.Classes.Input {
     class Button {
-        InputManager input = null;
+        //InputManager input = null;
 
         SpriteFont font = null;
 
@@ -31,7 +31,7 @@ namespace CodeGame.Classes.Input {
         }
 
         public Button(ScreenManager screen, Vector2 position, string text) {
-            input = screen.InputManager;
+            //input = screen.InputManager;
 
             font = screen.Content.Load<SpriteFont>("ButtonFont");
 

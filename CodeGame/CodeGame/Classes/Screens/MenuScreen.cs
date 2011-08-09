@@ -19,6 +19,7 @@ namespace CodeGame.Classes.Screens {
         Button btnHost = null;
         Button btnJoin = null;
         Button btnQuit = null;
+        Button btnCredits = null;
 
         Box nameBox = null;
         TextBox nameBoxText = null;
@@ -27,30 +28,35 @@ namespace CodeGame.Classes.Screens {
         bool nameBoxHasFocus = false;
 
         Box ipBox = null;
-        IPBox2 ipBoxText = null;
+        IPBox ipBoxText = null;
         Button ipBoxCancel = null;
         Button ipBoxOK = null;
         bool ipBoxHasFocus = false;
-        
+
+        Box creditsBox = null;
+        Button creditsBoxOK = null;
+        bool creditsBoxHasFocus = false;
+
         MouseState mouse = new MouseState();
         MouseState prevMouse = new MouseState();
 
         ScreenManager mgr = null;
         SpriteFont font = null;
 
-        string name = "PlayerName";
+        string nick = "PlayerName";
         IPAddress ipAddress = IPAddress.None;
 
         bool joiningGame = false;
 
         public MenuScreen(ScreenManager mgr) {
 
-            btnHost = new Button(mgr, new Vector2(20, 80), "Host");
-            btnJoin = new Button(mgr, new Vector2(20, 160), "Join");
-            btnQuit = new Button(mgr, new Vector2(20, 510), "Quit"); 
+            btnHost = new Button(mgr, new Vector2(40, 80), "Host");
+            btnJoin = new Button(mgr, new Vector2(40, 140), "Join");
+            btnCredits = new Button(mgr, new Vector2(40, 200), "Credits");
+            btnQuit = new Button(mgr, new Vector2(40, 600 - 40 - 49), "Quit"); 
 
             //string boxText = "I know what you're thinking. \"Did he fire six shots or only five?\" Well, to tell you the truth, in all this excitement I kind of lost track myself. But being as this is a .44 Magnum, the most powerful handgun in the world, and would blow your head clean off, you've got to ask yourself one question: Do I feel lucky? Well, do ya, punk?";
-            string boxText = "Enter your nickname";
+            string boxText = "What would you like for your nickname?";
             int boxWidth = 500;
             nameBoxCancel = new Button(mgr, "Back");
             nameBoxOK = new Button(mgr, "Accept");
@@ -59,13 +65,19 @@ namespace CodeGame.Classes.Screens {
             // 
             nameBox = new Box(mgr, boxText, boxWidth, btns, nameBoxText);
 
-            boxText = "Enter your host's IP address";
+            boxText = "What is your host's IP address?";
             ipBoxCancel = new Button(mgr, "Back");
             ipBoxOK = new Button(mgr, "Join");
             btns = new Button[] { ipBoxOK, ipBoxCancel };
-            ipBoxText = new IPBox2(mgr, boxWidth - 40);
+            ipBoxText = new IPBox(mgr, boxWidth - 40);
             //
             ipBox = new Box(mgr, boxText, boxWidth, btns, ipBoxText);
+
+            boxText = "Created by Derek, of course!";
+            creditsBoxOK = new Button(mgr, "Okay");
+            btns = new Button[] { creditsBoxOK };
+            //
+            creditsBox = new Box(mgr, boxText, boxWidth, btns);
 
             this.mgr = mgr;      
             //font = mgr.Content.Load<SpriteFont>("MenuFont");
@@ -75,17 +87,47 @@ namespace CodeGame.Classes.Screens {
 
             mouse = Mouse.GetState();
 
-            if (ipBoxHasFocus) {
+            //
+            // Credits box has focus
+            //
+
+            if (creditsBoxHasFocus) {
+                if (HoveringOver(creditsBoxOK)) {
+                    if (ClickedOn(creditsBoxOK)) {
+                        creditsBoxHasFocus = false;
+                    }
+                    else {
+                        creditsBoxOK.IsHover = true;
+                    }
+                }
+                else {
+                    creditsBoxOK.IsHover = false;
+                }
+            }
+
+            //
+            // "Enter your IP" box has focus
+            //
+
+            else if (ipBoxHasFocus) {
 
                 bool timeToCloseBox = ipBoxText.Update(gameTime);
 
                 if (timeToCloseBox) {
                     if (ipBoxText.EnterPressed) {
                         // Get IP address
+                        if (!IPAddress.TryParse(ipBoxText.GetText(), out ipAddress)) {
+                            // invalid IP
+                            ipAddress = IPAddress.None;
+                        }
+                        // Close both boxes, starting with this one
                         nameBoxHasFocus = false;
                     }
                     // Escape was pressed so don't grab ip
-                    // Go back to name box
+                    else {
+                        nameBoxText.SetText(nick);
+                    }
+                    // Close box
                     ipBoxHasFocus = false;
                 }
                 else if (HoveringOver(ipBoxCancel)) {
@@ -113,14 +155,19 @@ namespace CodeGame.Classes.Screens {
                 }
             }
             
+            //
+            // "Enter your nickname" box has focus
+            //
+
             else if (nameBoxHasFocus) {
 
                 bool timeToCloseBox = nameBoxText.Update(gameTime);
 
                 if (timeToCloseBox) {
                     if (nameBoxText.EnterPressed) {
-                        name = nameBoxText.GetText();
+                        nick = nameBoxText.GetText();
                         // Does the "Enter IP" box need displaying?
+                        // aka Joining a game
                         if (joiningGame) {
                             if (ipAddress == IPAddress.None) {
                                 ipBoxText.SetText("");
@@ -130,12 +177,15 @@ namespace CodeGame.Classes.Screens {
                             }
                             //ClearMouse();
                             ipBoxHasFocus = true;
+                            return;
+                        }
+                        else {
+                            // Hosting a game
+                            mgr.ChangeToLobbyScreen(nick);
                         }
                     }
-                    else {
-                        // Else: Escape was pressed so don't grab text
-                        nameBoxHasFocus = false;
-                    }
+                    // Escape pressed
+                    nameBoxHasFocus = false;
                 }
                 else if (HoveringOver(nameBoxCancel)) {
                     if (ClickedOn(nameBoxCancel)) {
@@ -146,8 +196,9 @@ namespace CodeGame.Classes.Screens {
                 }
                 else if (HoveringOver(nameBoxOK)) {
                     if (ClickedOn(nameBoxOK)) {
-                        name = nameBoxText.GetText();
+                        nick = nameBoxText.GetText();
                         // Does the "Enter IP" box need displaying?
+                        // aka Joining a game
                         if (joiningGame) {
                             if (ipAddress == IPAddress.None) {
                                 ipBoxText.SetText("");
@@ -156,8 +207,15 @@ namespace CodeGame.Classes.Screens {
                                 ipBoxText.SetText(ipAddress.ToString());
                             }
                             ipBoxHasFocus = true;
+                            // This is needed because the "Enter IP" box thinks
+                            // it's being clicked as the "Accept" btn on the
+                            // "Enter nick" box is clicked
                             ResetMouse();
                             return;
+                        }
+                        else {
+                            // Hosting a game
+                            mgr.ChangeToLobbyScreen(nick);
                         }
                         nameBoxHasFocus = false;
                     }
@@ -170,12 +228,17 @@ namespace CodeGame.Classes.Screens {
                     nameBoxOK.IsHover = false;
                 }
             }
+
+            //
+            // Menu has focus
+            //
+
             else {
 
                 // Host button
                 if (HoveringOver(btnHost)) {
                     if (ClickedOn(btnHost)) {
-                        nameBoxText.SetText(name);
+                        nameBoxText.SetText(nick);
                         joiningGame = false;
                         nameBoxHasFocus = true;
                     }
@@ -187,12 +250,22 @@ namespace CodeGame.Classes.Screens {
                 // Join button
                 else if (HoveringOver(btnJoin)) {
                     if (ClickedOn(btnJoin)) {
-                        nameBoxText.SetText(name);
+                        nameBoxText.SetText(nick);
                         joiningGame = true;
                         nameBoxHasFocus = true;
                     }
                     else {
                         btnJoin.IsHover = true;
+                    }
+                }
+
+                // Credits button
+                else if (HoveringOver(btnCredits)) {
+                    if (ClickedOn(btnCredits)) {
+                        creditsBoxHasFocus = true;
+                    }
+                    else {
+                        btnCredits.IsHover = true;
                     }
                 }
 
@@ -210,6 +283,7 @@ namespace CodeGame.Classes.Screens {
                 else {
                     btnHost.IsHover = false;
                     btnJoin.IsHover = false;
+                    btnCredits.IsHover = false;
                     btnQuit.IsHover = false;
                 }
             }
@@ -224,9 +298,13 @@ namespace CodeGame.Classes.Screens {
 
             btnHost.Draw(batch);
             btnJoin.Draw(batch);
+            btnCredits.Draw(batch);
             btnQuit.Draw(batch);
 
-            if (ipBoxHasFocus) {
+            if (creditsBoxHasFocus) {
+                creditsBox.Draw(batch);
+            }
+            else if (ipBoxHasFocus) {
                 ipBox.Draw(batch);
             }
             else if (nameBoxHasFocus) {

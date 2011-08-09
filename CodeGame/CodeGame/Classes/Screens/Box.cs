@@ -46,6 +46,11 @@ namespace CodeGame.Classes.Screens {
         Button[] btns = null;
         ITextBox textBox = null;
 
+        public Box(ScreenManager mgr, string text, int width, Button[] buttons)
+            : this(mgr, text, width, buttons, null) {
+
+        }
+
         public Box(ScreenManager mgr, string text, int width, Button[] buttons, ITextBox textbox) {
             // Load font
             font = mgr.Content.Load<SpriteFont>("ButtonFont");
@@ -114,10 +119,12 @@ namespace CodeGame.Classes.Screens {
             }
             // Add up all of this stuff to get the total height:
             //   number of lines of text * the height of a text letter
-            // + box padding * 3 (top, middle, ... , middle, bottom)
+            // + box padding * 4 (top, middle, ... , middle, bottom)
             // + the height of a button
             // + the height of a textbox
-            boxHeight = (lines.Count * (int)textDim.Y) + (PAD * 6) + Button.Height + textBox.GetHeight();
+            int textBoxHeight = 0;
+            if (textBox != null) textBoxHeight = textBox.GetHeight() + (PAD * 2);
+            boxHeight = (lines.Count * (int)textDim.Y) + (PAD * 3) + Button.Height + textBoxHeight;
 
             x1 = (screenWidth - boxWidth) / 2;
             x2 = x1 + boxWidth;
@@ -138,7 +145,8 @@ namespace CodeGame.Classes.Screens {
                 }
             }
 
-            textBox.SetPosition(new Vector2(x1 + PAD, y2 - (PAD * 3) - Button.Height - textBox.GetHeight()));
+            if (textBox != null)
+                textBox.SetPosition(new Vector2(x1 + PAD, y2 - (PAD * 3) - Button.Height - textBox.GetHeight()));
 
             // Corners
             boxPositions[0] = new Vector2(x1, y1);
@@ -197,7 +205,8 @@ namespace CodeGame.Classes.Screens {
             }
 
             // Draw textbox
-            textBox.Draw(batch);
+            if (textBox != null)
+                textBox.Draw(batch);
 
             // Draw Buttons
             for (int i = 0; i < btns.Length; i++) {

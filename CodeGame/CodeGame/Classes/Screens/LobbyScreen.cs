@@ -16,29 +16,54 @@ using CodeGame.Classes.Network.Server;
 
 namespace CodeGame.Classes.Screens {
     class LobbyScreen {
-        ScreenManager _manager;
+        ScreenManager mgr;
         string _username;
-        SpriteFont _font;
+        SpriteFont font;
         //Button _backButton;
         Listener _listener;
         Client _client;
         Commands _commands;
         string[] _playerNames = new string[0];
 
-        public LobbyScreen(ScreenManager manager) {
-            _manager = manager;
-            _font = _manager.Content.Load<SpriteFont>("MenuFont");
+        MouseState mouse = new MouseState();
+        MouseState prevMouse = new MouseState();
+        Button btnBack = null;
+        List<string> nicks = new List<string>(4);
+
+        public LobbyScreen(ScreenManager mgr) {
+            this.mgr = mgr;
+            font = mgr.Content.Load<SpriteFont>("ButtonFont");
             //_backButton = new Button(_manager, "Back-Normal", new Vector2(20, 510), Color.Cyan, false);
+
+            btnBack = new Button(mgr, new Vector2(40, 600 - 40 - 49), "Back");
         }
 
-        public void ChangeFromMenuScreen(string status, string username) {
-            _manager.StatusBar.Text = status;
-            _username = username;
-            _listener = new Listener();
-            _listener.Start();
+        public void ChangeFromMenuScreen(string nick) {
+            nicks.Add(nick);
+            //_manager.StatusBar.Text = status;
+            //_username = username;
+            //_listener = new Listener();
+            //_listener.Start();
         }
 
         public void Update(GameTime gameTime) {
+
+            mouse = Mouse.GetState();
+
+            if (HoveringOver(btnBack)) {
+                if (ClickedOn(btnBack)) {
+                    ; // go back to Menu screen
+                }
+                else {
+                    btnBack.IsHover = true;
+                }
+            }
+            else {
+                btnBack.IsHover = false;
+            }
+
+
+
             //if (_serverShared.HasSomethingChanged) {
             //    while (_serverShared.HasCommands()) {
             //        switch (_serverShared.GetNextCommand()) {
@@ -59,17 +84,42 @@ namespace CodeGame.Classes.Screens {
         }
 
         public void Draw(GraphicsDevice graphics, SpriteBatch batch) {
-            graphics.Clear(Color.CornflowerBlue);
+            graphics.Clear(Color.Black);
+
             batch.Begin();
-            for (int i = 0; i < _playerNames.Length; i++) {
-                batch.DrawString(_font, _playerNames[i], new Vector2(20, (i * 30) + 90), Color.White);
+            for (int i = 0; i < nicks.Count; i++) {
+                batch.DrawString(font, nicks[i], new Vector2(40, (i * 30) + 90), Color.White);
             }
-            
+
+            btnBack.Draw(batch);
+
+            batch.End();
 
             //batch.DrawString(_font, _username, new Vector2(20, 90), Color.White);
             //_backButton.Draw(batch);
             // Leave this out - is called in ScreenManager
             //batch.End();
+        }
+
+        private bool HoveringOver(Button btn) {
+            if (mouse.X >= btn.X1 && mouse.X <= btn.X2 && mouse.Y >= btn.Y1 && mouse.Y <= btn.Y2)
+                return true;
+            else
+                return false;
+        }
+
+        private bool ClickedOn(Button btn) {
+            //if (mouse.LeftButton == ButtonState.Pressed &&
+            //    prevMouse.LeftButton == ButtonState.Released)
+            //    return true;
+            //else
+            //    return false;
+
+            if (prevMouse.LeftButton == ButtonState.Pressed &&
+                mouse.LeftButton == ButtonState.Released)
+                return true;
+            else
+                return false;
         }
     }
 }
