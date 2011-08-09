@@ -18,6 +18,10 @@ namespace CodeGame.Classes.Network.Client {
         BinaryReader reader = null;
         BinaryWriter writer = null;
 
+        //
+        // Constructor
+        //
+        
         public Client2(ScreenManager mgr) {
             menuScreen = mgr.MenuScreen;
             lobbyScreen = mgr.LobbyScreen;
@@ -26,6 +30,10 @@ namespace CodeGame.Classes.Network.Client {
             Thread thread = new Thread(ClientLoop);
             thread.Start();
         }
+
+        //
+        // Infinite loop (on it's own thread)
+        //
 
         private void ClientLoop() {
             
@@ -52,11 +60,12 @@ namespace CodeGame.Classes.Network.Client {
                     // This a confirmation that we joined the lobby
                     case Command.JoinGameSuccess:
 
-                        // We expect the number of players, next
+                        // We expect the number of players next
                         int numPlayers = reader.ReadInt32();
+
+                        // And loop, grabbing all players and
+                        // giving them to lobbyScreen to draw
                         for (int i = 0; i < numPlayers; i++) {
-                            // And loop, grabbing all players and
-                            // giving them to lobbyScreen to draw
                             string nick = reader.ReadString();
                             lobbyScreen.PlayerJoin(nick);
                         }

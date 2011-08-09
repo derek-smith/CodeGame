@@ -65,9 +65,6 @@ namespace CodeGame.Classes.Screens {
         // which gives us access to everything
         ScreenManager mgr = null;
 
-        // Font used for drawing strings
-        SpriteFont font = null;
-
         //
         // Public information: name (and ip if joining a game)
         //
@@ -124,7 +121,6 @@ namespace CodeGame.Classes.Screens {
             creditsBox = new Box(mgr, boxText, boxWidth, btns);
 
             this.mgr = mgr;      
-            //font = mgr.Content.Load<SpriteFont>("MenuFont");
         }
 
         //
@@ -191,15 +187,15 @@ namespace CodeGame.Classes.Screens {
                         }
                         // Success
 
-                        //
-                        // Join a game
-                        //
-                        
-
-
                         // Hide "Enter Nick" box
                         // ("Enter IP" box is hidden next, jump down and see)
                         nameBoxHasFocus = false;
+                        
+                        //
+                        // Join a game
+                        //
+
+                        mgr.ChangeToLobbyScreen(false);
                     }
                     // Escape key pressed
                     else {
@@ -252,7 +248,7 @@ namespace CodeGame.Classes.Screens {
                         // Join a game
                         //
 
-                        
+                        mgr.ChangeToLobbyScreen(false);
                     }
                     else {
                         // Hovering
@@ -318,13 +314,13 @@ namespace CodeGame.Classes.Screens {
                         //
 
                         else {
-                            mgr.ChangeToLobbyScreen();
+                            mgr.ChangeToLobbyScreen(true);
                         }
                     }
-                    else {
-                        // Escape key pressed
-                        nameBoxHasFocus = false;
-                    }
+
+                    // Escape key pressed so
+                    // hide "Enter Nick" box
+                    nameBoxHasFocus = false;
                 }
 
                 //
@@ -383,7 +379,7 @@ namespace CodeGame.Classes.Screens {
                             // Hide "Enter Nick" box
                             nameBoxHasFocus = false;
 
-                            mgr.ChangeToLobbyScreen();
+                            mgr.ChangeToLobbyScreen(true);
                         }
                     }
                     else {
@@ -397,6 +393,8 @@ namespace CodeGame.Classes.Screens {
                 //
 
                 else {
+                    // Neither clicking nor hovering
+                    // so lets reset the hover state
                     nameBoxCancel.IsHover = false;
                     nameBoxOK.IsHover = false;
                 }
@@ -489,6 +487,10 @@ namespace CodeGame.Classes.Screens {
             // Save the mouse's state for next Update()
             prevMouse = mouse;
         }
+
+        //
+        // Draw
+        //
 
         public void Draw(GraphicsDevice graphics, SpriteBatch batch) {
 

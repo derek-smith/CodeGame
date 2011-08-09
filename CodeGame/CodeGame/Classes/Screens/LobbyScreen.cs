@@ -34,38 +34,63 @@ namespace CodeGame.Classes.Screens {
             btnBack = new Button(mgr, new Vector2(40, 600 - 40 - 49), "Back");
         }
 
-        public void ChangeFromMenuScreen(string nick) {
-            // start client (and server, if host)
-        }
+        //
+        // PlayerJoin
+        //
 
         public void PlayerJoin(string nick) {
             nicks.Add(nick);
         }
 
+        //
+        // ReadyYes
+        //
+
         public void ReadyYes(int id) {
             ready[id] = true;
         }
+
+        //
+        // ReadyNo
+        //
 
         public void ReadyNo(int id) {
             ready[id] = false;
         }
 
+        //
+        // Update
+        //
+
         public void Update(GameTime gameTime) {
 
+            // Save the mouse's state
             mouse = Mouse.GetState();
+
+            //
+            // Back button
+            //
 
             if (HoveringOver(btnBack)) {
                 if (ClickedOn(btnBack)) {
+                    // Clicked
                     ; // go back to Menu screen
                 }
                 else {
+                    // Hovering
                     btnBack.IsHover = true;
                 }
             }
             else {
+                // Neither clicking nor hovering
+                // so lets reset the hover state
                 btnBack.IsHover = false;
             }
         }
+
+        //
+        // Draw
+        //
 
         public void Draw(GraphicsDevice graphics, SpriteBatch batch) {
             // Clear screen to black
@@ -83,6 +108,10 @@ namespace CodeGame.Classes.Screens {
 
             batch.End();
         }
+
+        //
+        // Helper methods
+        //
 
         private bool HoveringOver(Button btn) {
             if (mouse.X >= btn.X1 && mouse.X <= btn.X2 && mouse.Y >= btn.Y1 && mouse.Y <= btn.Y2)

@@ -10,6 +10,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using CodeGame.Classes.Input;
+using CodeGame.Classes.Network.Server;
+using CodeGame.Classes.Network.Client;
 
 namespace CodeGame.Classes.Screens {
     enum Screen { Menu, Lobby, Game }
@@ -25,6 +27,9 @@ namespace CodeGame.Classes.Screens {
 
         StatusBar2 statusBar = null;
         string statusBarStartText = "So you want to play my game, huh? Swwweeeeeet!";
+
+        Listener2 listener = null;
+        Client2 client = null;
 
         public ScreenManager(Game game) {
             this.game = game;
@@ -84,13 +89,26 @@ namespace CodeGame.Classes.Screens {
             game.Exit();
         }
 
-        // Change from Menu to Lobby
-        public void ChangeToLobbyScreen() {
+        //
+        // Change from Menu screen to Lobby screen
+        //
+
+        public void ChangeToLobbyScreen(bool hosting) {
             statusBar.Text = "You really think someone is going to play YOU?";
             activeScreen = Screen.Lobby;
+
+            if (hosting) {
+                listener = new Listener2();
+                listener.Start();
+            }
+
+            client = new Client2(this);
         }
 
-        // Change from Lobby to Menu
+        //
+        // Change from Lobby screen to Menu screen
+        //
+
         public void ChangeToMenuScreen() {
             statusBar.Text = statusBarStartText;
             activeScreen = Screen.Menu;

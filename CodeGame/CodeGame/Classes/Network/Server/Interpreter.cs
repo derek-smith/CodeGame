@@ -13,7 +13,7 @@ namespace CodeGame.Classes.Network.Server {
         Object theInterpreter = new Object();
 
         // Need all the transmitters in order to send commands and broadcast
-        List<Transmitter2> transmitters = new List<Transmitter2>(4);
+        List<Reader> transmitters = new List<Reader>(4);
 
         // Keep track of nicknames
         List<string> nicks = new List<string>(4);
@@ -37,7 +37,7 @@ namespace CodeGame.Classes.Network.Server {
             }            
         }
 
-        public int JoinGame(Transmitter2 transmitter, string nick) {
+        public int JoinGame(Reader transmitter, string nick) {
             lock (theInterpreter) {
                 // Save for later use
                 transmitters.Add(transmitter);

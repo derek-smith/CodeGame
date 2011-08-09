@@ -8,21 +8,21 @@ using System.Net.Sockets;
 
 namespace CodeGame.Classes.Network.Server {
 
-    class Transmitter2 {
+    class Reader {
         Thread thread = null;
         BinaryReader reader = null;
-        BinaryWriter writer = null;     // will this even be used?
-        Interpreter2 interpreter = null;
+        BinaryWriter writer = null;
+        Interpreter2 interpret = null;
 
         int id = -1;
 
         public BinaryWriter W { get { return writer; } }
 
-        public Transmitter2(Socket socket, Interpreter2 interpreter) {
+        public Reader(Socket socket, Interpreter2 interpreter) {
             NetworkStream stream = new NetworkStream(socket);
             reader = new BinaryReader(stream);
             writer = new BinaryWriter(stream);
-            this.interpreter = interpreter;
+            this.interpret = interpreter;
         }
 
         public void Start() {
@@ -47,17 +47,17 @@ namespace CodeGame.Classes.Network.Server {
                     case Command.JoinGame:
 
                         string nick = reader.ReadString();
-                        id = interpreter.JoinGame(this, nick);
+                        id = interpret.JoinGame(this, nick);
                         break;
 
                     case Command.ReadyYes:
 
-                        interpreter.ReadyYes(id);
+                        interpret.ReadyYes(id);
                         break;
 
                     case Command.ReadyNo:
 
-                        interpreter.ReadyNo(id);
+                        interpret.ReadyNo(id);
                         break;
                 }
             }

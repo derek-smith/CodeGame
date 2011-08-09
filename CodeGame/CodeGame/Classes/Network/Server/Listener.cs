@@ -41,46 +41,8 @@ namespace CodeGame.Classes.Network.Server {
                 Socket transmitterSocket = socket.Accept();
 
                 // Create new transmitter and assign socket
-                Transmitter2 transmitter = new Transmitter2(transmitterSocket, interpreter);
-                transmitter.Start();
-            }
-        }
-    }
-
-    class Listener {
-        // This is global so an outsider can stop the thread.
-        Thread _listenThread = null;
-
-        Server _server = null;
-
-        public Listener() {
-        }
-
-        public void Start() {
-            _server = new Server();
-            _server.Start();
-
-            // Create a thread to listen for incoming connections.
-            _listenThread = new Thread(Run);
-            //_listenThread.IsBackground = true;     // May need this, but not sure yet.
-            _listenThread.Start();
-        }
-
-        public void Stop() {
-            _listenThread.Abort();
-            _server.Stop();
-        }
-
-        // This method will eventually need error detection (try/catch etc)
-        private void Run() {
-            Socket listenSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            listenSocket.Bind(new IPEndPoint(IPAddress.Any, 12345));
-            listenSocket.Listen(3);
-
-            while (true) {
-                Socket clientSocket = listenSocket.Accept();
-
-                _server.PushConnection(clientSocket);
+                Reader reader = new Reader(transmitterSocket, interpreter);
+                reader.Start();
             }
         }
     }
