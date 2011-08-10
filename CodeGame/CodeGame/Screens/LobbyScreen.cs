@@ -9,13 +9,14 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
-using CodeGame.Classes.Input;
-using CodeGame.Classes.Network;
-using CodeGame.Classes.Network.Client;
-using CodeGame.Classes.Network.Server;
 
-namespace CodeGame.Classes.Screens {
+using CodeGame.Controls;
+using CodeGame.Network;
+
+namespace CodeGame.Screens {
     class LobbyScreen {
+        const bool ALWAYS_SHOW_START_BUTTON = true;
+
         ScreenManager mgr;
         SpriteFont font;
 
@@ -33,32 +34,36 @@ namespace CodeGame.Classes.Screens {
         bool showStartButton = false;
 
         Client client = null;
-
+        
         public string[] Nicks { get { return nicks.ToArray(); } }
+
+        // HACK: Need a dynamic way of getting this info
+        const int cardWidth = 80;
+        const int cardHeight = 80;
 
         public LobbyScreen(ScreenManager mgr) {
             this.mgr = mgr;
             font = mgr.Content.Load<SpriteFont>("MainFont");
 
-            btnBack = new Button(mgr, new Vector2(40, 600 - 40 - 49), "Back");
-            btnReady = new Button(mgr, new Vector2(mgr.Width - 40 - Button.Width, 600 - 40 - 49), "Ready");
-            btnStart = new Button(mgr, new Vector2(mgr.Width - (40 * 2) - (Button.Width * 2), 600 - 40 - 49), "Start");
+            btnBack = new Button(mgr, new Vector2(20, 600 - 40 - 49), "Back");
+            btnReady = new Button(mgr, new Vector2(mgr.Width - 40 - Button.Width, 600 - 20 - 49), "Ready");
+            btnStart = new Button(mgr, new Vector2(mgr.Width - (40 * 2) - (Button.Width * 2), 600 - 20 - 49), "Start");
         }
 
         public void SetClient(Client client) {
             this.client = client;
 
-            if (mgr.MenuScreen.IsHost)
-                showStartButton = true;
+            //if (mgr.MenuScreen.IsHost)
+                //showStartButton = true;
         }
 
         //
         // PlayerJoin
         //
 
-        public void PlayerJoin(string nick) {
+        public void PlayerJoin(string nick, bool ready) {
             nicks.Add(nick);
-            ready.Add(false);
+            this.ready.Add(ready);
             showReadyButton = true;
         }
 
@@ -68,6 +73,11 @@ namespace CodeGame.Classes.Screens {
 
         public void ReadyYes(int id) {
             ready[id] = true;
+
+            if (AllPlayersReady()) {
+                if (mgr.MenuScreen.IsHost) showStartButton = true;
+                mgr.StatusBar.Color = StatusBar.LobbyColorReady;
+            }
         }
 
         //
@@ -76,6 +86,14 @@ namespace CodeGame.Classes.Screens {
 
         public void ReadyNo(int id) {
             ready[id] = false;
+
+            if (mgr.MenuScreen.IsHost) showStartButton = false;
+            mgr.StatusBar.Color = StatusBar.LobbyColor;
+        }
+
+        public void GameBegin() {
+            mgr.GameScreen.Start();
+            mgr.ChangeToGameScreen();
         }
 
         //
@@ -121,10 +139,10 @@ namespace CodeGame.Classes.Screens {
             // Start button
             //
 
-            else if (showStartButton && AllPlayersReady() && HoveringOver(btnStart)) {
+            else if (showStartButton /* && AllPlayersReady() */ && HoveringOver(btnStart)) {
                 if (ClickedOn(btnStart)) {
                     // Clicked
-                    ;
+                    client.GameBeginRequest();
                 }
                 else {
                     // Hovering
@@ -158,18 +176,13 @@ namespace CodeGame.Classes.Screens {
             graphics.Clear(Color.Black);
 
             batch.Begin();
-            
-            // Draw nicknames
+
             for (int i = 0; i < nicks.Count; i++) {
-                batch.DrawString(font, nicks[i], new Vector2(40, (i * 30) + 90), Color.White);
+                batch.DrawString(font, nicks[i], new Vector2(20, (i * (cardHeight + 4)) + 77), Color.White);
             }
 
-            // Draw status (if ready or not)
-            for (int i = 0; i < ready.Count; i++) {
-                Color color = Color.Yellow;
-                if (!ready[i]) color = Color.Gray;
-
-                batch.DrawString(font, "Ready", new Vector2(250, (i * 30) + 90), color);
+            for (int i = 0; i < nicks.Count; i++) {
+                batch.DrawString(font, "Ready", new Vector2(20, (i * (cardHeight + 4)) + 100), ready[i] ? Color.Yellow : Color.Gray);
             }
 
             // Let Back button draw itself
@@ -179,7 +192,7 @@ namespace CodeGame.Classes.Screens {
                 btnReady.Draw(batch);
             }
 
-            if (showStartButton && AllPlayersReady()) {
+            if (showStartButton /* && AllPlayersReady() */) {
                 btnStart.Draw(batch);
             }
 
@@ -192,6 +205,8 @@ namespace CodeGame.Classes.Screens {
         //
 
         private bool AllPlayersReady() {
+            if (ALWAYS_SHOW_START_BUTTON) return true;
+
             if (ready.Count < 2) return false;
 
             for (int i = 0; i < ready.Count; i++) {

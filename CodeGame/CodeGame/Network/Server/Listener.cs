@@ -12,7 +12,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading;
 
-namespace CodeGame.Classes.Network.Server {
+namespace CodeGame.Network.Server {
 
     class Listener {
         Interpreter interpreter = null;

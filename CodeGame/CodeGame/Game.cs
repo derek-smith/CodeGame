@@ -12,8 +12,8 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
-using CodeGame.Classes.Screens;
-using CodeGame.Classes.Utilities;
+
+using CodeGame.Screens;
 
 namespace CodeGame {
     public class Game : Microsoft.Xna.Framework.Game {
@@ -30,7 +30,7 @@ namespace CodeGame {
 
             graphics = new GraphicsDeviceManager(this);
             graphics.SynchronizeWithVerticalRetrace = false;
-            graphics.PreferredBackBufferWidth = 800;
+            graphics.PreferredBackBufferWidth = 960;
             graphics.PreferredBackBufferHeight = 600;
             graphics.ApplyChanges();
 

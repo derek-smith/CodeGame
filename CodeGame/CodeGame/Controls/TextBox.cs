@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
@@ -9,11 +8,13 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
-using CodeGame.Classes.Input;
+using System.Text;
 
-namespace CodeGame.Classes.Screens {
+using CodeGame.Screens;
 
-    class IPBox : ITextBox {
+namespace CodeGame.Controls {
+
+    class TextBox : ITextBox {
         Vector2 boxPosition = Vector2.Zero;
         Texture2D boxTexture = null;
 
@@ -30,18 +31,27 @@ namespace CodeGame.Classes.Screens {
 
         Keys[] keys;
         Keys[] prevKeys;
-        //bool isShiftPressed = false;
+        bool isShiftPressed = false;
         Dictionary<Keys, bool> lockedKeys = new Dictionary<Keys, bool>();
 
         Texture2D cursor = null;
         Vector2 cursorPosition = Vector2.Zero;
+        bool drawCursor = true;
+        // In milliseconds
+        const int cursorTimeout = 500;
+        int cursorTimer = 0;
 
         // False means Escape was pressed
         // but this flag is only checked AFTER the box has been closed.
         bool enterPressed = false;
         public bool EnterPressed { get { return enterPressed; } }
 
-        public IPBox(ScreenManager mgr, int width = 400) {
+        bool newDataOK = false;
+        // In milliseconds
+        const int newDataOKTimeout = 100;
+        int newDataOKTimer = 0;
+
+        public TextBox(ScreenManager mgr, int width = 200) {
             font = mgr.Content.Load<SpriteFont>("MainFont");
             textPosition = CalculateTextPosition();
 
@@ -74,93 +84,116 @@ namespace CodeGame.Classes.Screens {
             this.text = text;
             ClearKeys();
             UpdateCursorPosition();
+            newDataOK = false;
+            newDataOKTimer = 0;
         }
 
         private void ClearKeys() {
             lockedKeys[Keys.Enter] = false;
             lockedKeys[Keys.Escape] = false;
             lockedKeys[Keys.Back] = false;
-            lockedKeys[Keys.OemPeriod] = false;
             for (int i = 48; i <= 57; i++) lockedKeys[(Keys)i] = false;
-            //for (int i = 65; i <= 90; i++) lockedKeys[(Keys)i] = false;
+            for (int i = 65; i <= 90; i++) lockedKeys[(Keys)i] = false;
 
-            keys = new Keys[0];
-            prevKeys = new Keys[0];
+            keys = new Keys[1];
+            keys[0] = new Keys();
+            prevKeys = new Keys[1];
+            prevKeys[0] = new Keys();
         }
 
         private bool IsValidKey(Keys key) {
             int n = (int)key;
-            return (key == Keys.Back ||
-                    key == Keys.Enter ||
-                    key == Keys.Escape ||
-                    key == Keys.OemPeriod ||
-                    (n >= 48 && n <= 57));  // Numbers
-                    //(n >= 65 && n <= 90));      // Letters
+            return (key == Keys.Back        ||
+                    key == Keys.Enter       ||
+                    key == Keys.Escape      ||
+                    (n >= 48 && n <= 57)    ||  // Numbers
+                    (n >= 65 && n <= 90));      // Letters
         }
 
         public bool Update(GameTime gameTime) {
-            keys = Keyboard.GetState().GetPressedKeys();
 
-            // Clear lockedKeys for released keys
-            for (int i = 0; i < prevKeys.Length; i++) {
-                if (!keys.Contains(prevKeys[i])) {
-                    lockedKeys[prevKeys[i]] = false;
+            //
+            // Update timers
+            //
+
+            cursorTimer += gameTime.ElapsedGameTime.Milliseconds;
+
+            if (cursorTimer >= cursorTimeout) {
+                drawCursor = !drawCursor;
+                cursorTimer -= cursorTimeout;
+            }
+
+            if (!newDataOK) {
+                newDataOKTimer += gameTime.ElapsedGameTime.Milliseconds;
+
+                if (newDataOKTimer > newDataOKTimeout) {
+                    newDataOK = true;
                 }
             }
 
-            // Shift is not part of the IsValidKeys() check, but is still valid!
-            //if (keys.Contains(Keys.LeftShift) || keys.Contains(Keys.RightShift)) {
-            //    isShiftPressed = true;
-            //}
+            //
+            // Update keys
+            //
 
-            for (int i = 0; i < keys.Length; i++) {
-                if (IsValidKey(keys[i]) && !lockedKeys[keys[i]]) {
+            if (newDataOK) {
+                keys = Keyboard.GetState().GetPressedKeys();
 
-                    lockedKeys[keys[i]] = true;
+                // Clear lockedKeys for released keys
+                for (int i = 0; i < prevKeys.Length; i++) {
+                    if (!keys.Contains(prevKeys[i])) {
+                        lockedKeys[prevKeys[i]] = false;
+                    }
+                }
 
-                    if (keys[i] == Keys.Enter) {
-                        if (text != "") {
-                            enterPressed = true;
+                // Shift is not part of the IsValidKeys() check, but is still valid!
+                if (keys.Contains(Keys.LeftShift) || keys.Contains(Keys.RightShift)) {
+                    isShiftPressed = true;
+                }
+
+                for (int i = 0; i < keys.Length; i++) {
+                    if (IsValidKey(keys[i]) && !lockedKeys[keys[i]]) {
+
+                        lockedKeys[keys[i]] = true;
+
+                        if (keys[i] == Keys.Enter) {
+                            if (text != "") {
+                                enterPressed = true;
+                            }
+                            // text == "" so do nothing
+                            else {
+                                return false;
+                            }
+                            return true;
                         }
-                        // text == "" so do nothing
+                        else if (keys[i] == Keys.Escape) {
+                            enterPressed = false;
+                            return true;
+                        }
+                        else if (keys[i] == Keys.Back) {
+                            if (text != "") {
+                                text = text.Substring(0, text.Length - 1);
+                            }
+                        }
                         else {
-                            return false;
+                            int n = (int)keys[i];
+
+                            if (n >= 65 && n <= 90 && isShiftPressed == false) n += 32;
+
+                            text += (char)n;
                         }
-                        return true;
-                    }
-                    else if (keys[i] == Keys.Escape) {
-                        enterPressed = false;
-                        return true;
-                    }
-                    else if (keys[i] == Keys.Back) {
-                        if (text != "") {
-                            text = text.Substring(0, text.Length - 1);
-                        }
-                    }
-                    else if (keys[i] == Keys.OemPeriod) {
-                        text += ".";
-                    }
-                    else {
-                        // Numbers
-                        int n = (int)keys[i];
 
-                        //if (n >= 65 && n <= 90 && isShiftPressed == false) n += 32;
+                        UpdateCursorPosition();
 
-                        text += (char)n;
                     }
-
-                    UpdateCursorPosition();
 
                 }
 
+                isShiftPressed = false;
+                prevKeys = keys;
             }
-
-            //isShiftPressed = false;
-            prevKeys = keys;
-
             return false;
         }
-
+        
         public void SetPosition(Vector2 newPosition) {
             boxPosition = newPosition;
             textPosition = CalculateTextPosition();
@@ -180,7 +213,8 @@ namespace CodeGame.Classes.Screens {
         public void Draw(SpriteBatch batch) {
             batch.Draw(boxTexture, boxPosition, Color.White);
             batch.DrawString(font, text, textPosition, Color.White);
-            batch.Draw(cursor, cursorPosition, Color.White);
+            if (drawCursor)
+                batch.Draw(cursor, cursorPosition, Color.White);
         }
 
         public int GetWidth() {

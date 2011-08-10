@@ -9,26 +9,27 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
-using CodeGame.Classes.Input;
 
-namespace CodeGame.Classes.Screens {
+using CodeGame.Screens;
 
-    class Box {
+namespace CodeGame.Controls {
 
-        Texture2D[] boxTextures = null;                 // Calculated
+    class Window {
+
+        Texture2D[] boxTextures = null;                
         Vector2[] boxPositions = new Vector2[8];
 
-        SpriteFont font = null;                         // Calculated
+        SpriteFont font = null;                        
 
         List<string> lines = new List<string>();
-        Vector2[] linePositions = null;                 // Calculated
+        Vector2[] linePositions = null;               
 
-        int screenWidth = -1;                           // All calculated 
-        int screenHeight = -1;                          // 
-        int boxWidth = -1;                              //
-        int boxHeight = -1;                             //
-        int cornerWidth = -1;                           //
-        int cornerHeight = -1;                          //
+        int screenWidth = -1;                         
+        int screenHeight = -1;                          
+        int boxWidth = -1;                             
+        int boxHeight = -1;                          
+        int cornerWidth = -1;                       
+        int cornerHeight = -1;                      
 
         const int PAD = 20;
 
@@ -46,12 +47,12 @@ namespace CodeGame.Classes.Screens {
         Button[] btns = null;
         ITextBox textBox = null;
 
-        public Box(ScreenManager mgr, string text, int width, Button[] buttons)
+        public Window(ScreenManager mgr, string text, int width, Button[] buttons)
             : this(mgr, text, width, buttons, null) {
 
         }
 
-        public Box(ScreenManager mgr, string text, int width, Button[] buttons, ITextBox textbox) {
+        public Window(ScreenManager mgr, string text, int width, Button[] buttons, ITextBox textbox) {
             // Load font
             font = mgr.Content.Load<SpriteFont>("MainFont");
 

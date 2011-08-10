@@ -6,9 +6,10 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
-using CodeGame.Classes.Screens;
 
-namespace CodeGame.Classes.Network.Client {
+using CodeGame.Screens;
+
+namespace CodeGame.Network {
 
     class Client {
         MenuScreen menuScreen = null;
@@ -68,7 +69,8 @@ namespace CodeGame.Classes.Network.Client {
                         // giving them to lobbyScreen to draw
                         for (int i = 0; i < numPlayers; i++) {
                             string nick = reader.ReadString();
-                            lobbyScreen.PlayerJoin(nick);
+                            bool ready = reader.ReadBoolean();
+                            lobbyScreen.PlayerJoin(nick, ready);
                         }
                         break;
 
@@ -78,7 +80,7 @@ namespace CodeGame.Classes.Network.Client {
                         // Grab new player's nick and give it
                         // to lobbyScreen
                         string newNick = reader.ReadString();
-                        lobbyScreen.PlayerJoin(newNick);
+                        lobbyScreen.PlayerJoin(newNick, false);
                         break;
 
                     // A player is ready to begin
@@ -94,12 +96,21 @@ namespace CodeGame.Classes.Network.Client {
                         int noID = reader.ReadInt32();
                         lobbyScreen.ReadyNo(noID);
                         break;
+
+                    case Command.GameBegin:
+
+                        lobbyScreen.GameBegin();
+                        break;
                 }
             }
         }
 
         public void Ready() {
             writer.Write((int)Command.Ready);
+        }
+
+        public void GameBeginRequest() {
+            writer.Write((int)Command.GameBeginRequest);
         }
     }
 }

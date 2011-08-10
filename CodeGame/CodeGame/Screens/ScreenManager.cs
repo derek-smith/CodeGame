@@ -9,11 +9,12 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
-using CodeGame.Classes.Input;
-using CodeGame.Classes.Network.Server;
-using CodeGame.Classes.Network.Client;
 
-namespace CodeGame.Classes.Screens {
+using CodeGame.Controls;
+using CodeGame.Network;
+using CodeGame.Network.Server;
+
+namespace CodeGame.Screens {
     enum Screen { Menu, Lobby, Game }
 
     class ScreenManager {
@@ -25,8 +26,8 @@ namespace CodeGame.Classes.Screens {
         
         Screen activeScreen = Screen.Menu;
 
-        StatusBar2 statusBar = null;
-        string statusBarStartText = "So you want to play my game, huh? Swwweeeeeet!";
+        StatusBar statusBar = null;
+        string statusBarStartText = "Menu";
 
         Listener listener = null;
         Client client = null;
@@ -38,7 +39,7 @@ namespace CodeGame.Classes.Screens {
             lobbyScreen = new LobbyScreen(this);
             gameScreen = new GameScreen(this);
 
-            statusBar = new StatusBar2(this);
+            statusBar = new StatusBar(this);
             statusBar.Text = statusBarStartText;
         }
 
@@ -77,7 +78,7 @@ namespace CodeGame.Classes.Screens {
         }
 
         public ContentManager Content { get { return game.Content; } }
-        public StatusBar2 StatusBar { get { return statusBar; } }
+        public StatusBar StatusBar { get { return statusBar; } }
         public Game Game { get { return game; } }
         public MenuScreen MenuScreen { get { return menuScreen; } }
         public LobbyScreen LobbyScreen { get { return lobbyScreen; } }
@@ -95,7 +96,8 @@ namespace CodeGame.Classes.Screens {
         //
 
         public void ChangeToLobbyScreen(bool hosting) {
-            statusBar.Text = "You really think someone is going to play YOU?";
+            statusBar.Text = "Lobby";
+            statusBar.Color = StatusBar.LobbyColor;
             activeScreen = Screen.Lobby;
 
             if (hosting) {
@@ -113,7 +115,13 @@ namespace CodeGame.Classes.Screens {
 
         public void ChangeToMenuScreen() {
             statusBar.Text = statusBarStartText;
+            statusBar.Color = StatusBar.MenuColor;
             activeScreen = Screen.Menu;
+        }
+
+        public void ChangeToGameScreen() {
+            statusBar.Text = "Game";
+            activeScreen = Screen.Game;
         }
     }
 }

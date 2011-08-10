@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using System.Diagnostics;
 
-namespace CodeGame.Classes.Utilities {
+namespace CodeGame.Screens {
     class FPS
     {
         public enum Display { TopLeft, TopRight, BottomRight, BottomLeft }

@@ -9,12 +9,13 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
-using CodeGame.Classes.Input;
-using CodeGame.Classes.Network.Client;
-using CodeGame.Classes.Network.Server;
-using System.Net;
 
-namespace CodeGame.Classes.Screens {
+using System.Net;   // IPAddress
+
+using CodeGame.Controls;
+
+namespace CodeGame.Screens {
+
     class MenuScreen {
 
         //
@@ -30,7 +31,7 @@ namespace CodeGame.Classes.Screens {
         // "Enter nickname" box and associated items
         //
 
-        Box nameBox = null;
+        Window nameBox = null;
         TextBox nameBoxText = null;
         Button nameBoxCancel = null;
         Button nameBoxOK = null;
@@ -40,7 +41,7 @@ namespace CodeGame.Classes.Screens {
         // "Enter IP" box and associated items
         //
 
-        Box ipBox = null;
+        Window ipBox = null;
         IPBox ipBoxText = null;
         Button ipBoxCancel = null;
         Button ipBoxOK = null;
@@ -50,7 +51,7 @@ namespace CodeGame.Classes.Screens {
         // Credits box and associated items
         //
 
-        Box creditsBox = null;
+        Window creditsBox = null;
         Button creditsBoxOK = null;
         bool creditsBoxHasFocus = false;
 
@@ -109,7 +110,7 @@ namespace CodeGame.Classes.Screens {
             Button[] btns = new Button[] { nameBoxOK, nameBoxCancel };
             nameBoxText = new TextBox(mgr, boxWidth - 40);
             // 
-            nameBox = new Box(mgr, boxText, boxWidth, btns, nameBoxText);
+            nameBox = new Window(mgr, boxText, boxWidth, btns, nameBoxText);
 
             boxText = "What is your host's IP address?";
             ipBoxCancel = new Button(mgr, "Back");
@@ -117,13 +118,13 @@ namespace CodeGame.Classes.Screens {
             btns = new Button[] { ipBoxOK, ipBoxCancel };
             ipBoxText = new IPBox(mgr, boxWidth - 40);
             //
-            ipBox = new Box(mgr, boxText, boxWidth, btns, ipBoxText);
+            ipBox = new Window(mgr, boxText, boxWidth, btns, ipBoxText);
 
             boxText = "Created by Derek, of course!";
             creditsBoxOK = new Button(mgr, "Okay");
             btns = new Button[] { creditsBoxOK };
             //
-            creditsBox = new Box(mgr, boxText, boxWidth, btns);
+            creditsBox = new Window(mgr, boxText, boxWidth, btns);
 
             this.mgr = mgr;      
         }

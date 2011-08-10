@@ -7,7 +7,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Diagnostics;
 
-namespace CodeGame.Classes.Network.Server {
+namespace CodeGame.Network.Server {
 
     class Reader {
         Thread thread = null;
@@ -60,6 +60,11 @@ namespace CodeGame.Classes.Network.Server {
                     case Command.Ready:
 
                         interpret.Ready(id);
+                        break;
+
+                    case Command.GameBeginRequest:
+
+                        interpret.GameBeginRequest();
                         break;
                 }
             }
