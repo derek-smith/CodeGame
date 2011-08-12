@@ -78,7 +78,7 @@ namespace CodeGame.Screens {
             cardWidth = cardTextures[0].Width;
             cardHeight = cardTextures[0].Height;
 
-            btnDiscard = new Button(mgr, new Vector2(20, 600 - 20 - cardHeight + 17), "Discard");
+            btnDiscard = new Button("Discard", new Vector2(20, 600 - 20 - cardHeight + 17));
         }
 
         // TODO: Reset everything for a brand new use

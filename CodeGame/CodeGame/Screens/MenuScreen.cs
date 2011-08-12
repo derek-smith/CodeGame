@@ -22,10 +22,26 @@ namespace CodeGame.Screens {
         // Menu buttons
         //
 
-        Button btnHost = null;
-        Button btnJoin = null;
-        Button btnQuit = null;
-        Button btnCredits = null;
+        Button btnHost;
+        Button btnJoin;
+        Button btnQuit;
+        Button btnCredits;
+
+        private void btnHost_Click() {
+
+        }
+
+        private void btnJoin_Click() {
+
+        }
+
+        private void btnCredits_Click() {
+            creditsBoxHasFocus = true;
+        }
+
+        private void btnQuit_Click() {
+            mgr.Close();
+        }
 
         //
         // "Enter nickname" box and associated items
@@ -97,31 +113,38 @@ namespace CodeGame.Screens {
         public MenuScreen(ScreenManager mgr) {
 
             // Create all the buttons
-            btnHost = new Button(mgr, new Vector2(40, 80), "Host");
-            btnJoin = new Button(mgr, new Vector2(40, 140), "Join");
-            btnCredits = new Button(mgr, new Vector2(40, 200), "Credits");
-            btnQuit = new Button(mgr, new Vector2(40, 600 - 40 - 49), "Quit"); 
+            btnHost = new Button("Host", new Vector2(40, 80));
+            btnHost.Click += btnHost_Click;
+
+            btnJoin = new Button("Join", new Vector2(40, 140));
+            btnJoin.Click += btnJoin_Click;
+            
+            btnCredits = new Button("Credits", new Vector2(40, 200));
+            btnCredits.Click += btnCredits_Click;
+
+            btnQuit = new Button("Quit", new Vector2(40, 600 - 40 - 49));
+            btnQuit.Click += btnQuit_Click;
 
             //string boxText = "I know what you're thinking. \"Did he fire six shots or only five?\" Well, to tell you the truth, in all this excitement I kind of lost track myself. But being as this is a .44 Magnum, the most powerful handgun in the world, and would blow your head clean off, you've got to ask yourself one question: Do I feel lucky? Well, do ya, punk?";
             string boxText = "What would you like for your nickname?";
             int boxWidth = 500;
-            nameBoxCancel = new Button(mgr, "Back");
-            nameBoxOK = new Button(mgr, "Accept");
+            nameBoxCancel = new Button("Back", Vector2.Zero);
+            nameBoxOK = new Button("Accept", Vector2.Zero);
             Button[] btns = new Button[] { nameBoxOK, nameBoxCancel };
             nameBoxText = new TextBox(mgr, boxWidth - 40);
             // 
             nameBox = new Window(mgr, boxText, boxWidth, btns, nameBoxText);
 
             boxText = "What is your host's IP address?";
-            ipBoxCancel = new Button(mgr, "Back");
-            ipBoxOK = new Button(mgr, "Join");
+            ipBoxCancel = new Button("Back", Vector2.Zero);
+            ipBoxOK = new Button("Join", Vector2.Zero);
             btns = new Button[] { ipBoxOK, ipBoxCancel };
             ipBoxText = new IPBox(mgr, boxWidth - 40);
             //
             ipBox = new Window(mgr, boxText, boxWidth, btns, ipBoxText);
 
             boxText = "Created by Derek, of course!";
-            creditsBoxOK = new Button(mgr, "Okay");
+            creditsBoxOK = new Button("Okay", Vector2.Zero);
             btns = new Button[] { creditsBoxOK };
             //
             creditsBox = new Window(mgr, boxText, boxWidth, btns);
@@ -422,85 +445,85 @@ namespace CodeGame.Screens {
             // Menu has focus
             //
 
-            else {
+            //else {
 
-                //
-                // Host button
-                //
+            //    //
+            //    // Host button
+            //    //
 
-                if (HoveringOver(btnHost)) {
-                    if (ClickedOn(btnHost)) {
-                        // Clicked
-                        nameBoxText.SetText(nick);
-                        joiningGame = false;
-                        nameBoxHasFocus = true;
-                    }
-                    else {
-                        // Hovering
-                        btnHost.IsHover = true;
-                    }
-                }
+            //    if (HoveringOver(btnHost)) {
+            //        if (ClickedOn(btnHost)) {
+            //            // Clicked
+            //            nameBoxText.SetText(nick);
+            //            joiningGame = false;
+            //            nameBoxHasFocus = true;
+            //        }
+            //        else {
+            //            // Hovering
+            //            btnHost.IsHover = true;
+            //        }
+            //    }
 
-                //
-                // Join button
-                //
+            //    //
+            //    // Join button
+            //    //
 
-                else if (HoveringOver(btnJoin)) {
-                    if (ClickedOn(btnJoin)) {
-                        // Clicked
-                        nameBoxText.SetText(nick);
-                        joiningGame = true;
-                        nameBoxHasFocus = true;
-                    }
-                    else {
-                        // Hovering
-                        btnJoin.IsHover = true;
-                    }
-                }
+            //    else if (HoveringOver(btnJoin)) {
+            //        if (ClickedOn(btnJoin)) {
+            //            // Clicked
+            //            nameBoxText.SetText(nick);
+            //            joiningGame = true;
+            //            nameBoxHasFocus = true;
+            //        }
+            //        else {
+            //            // Hovering
+            //            btnJoin.IsHover = true;
+            //        }
+            //    }
 
-                //
-                // Credits button
-                //
+            //    //
+            //    // Credits button
+            //    //
 
-                else if (HoveringOver(btnCredits)) {
-                    if (ClickedOn(btnCredits)) {
-                        // Clicked
-                        creditsBoxHasFocus = true;
-                    }
-                    else {
-                        // Hovering
-                        btnCredits.IsHover = true;
-                    }
-                }
+            //    else if (HoveringOver(btnCredits)) {
+            //        if (ClickedOn(btnCredits)) {
+            //            // Clicked
+            //            creditsBoxHasFocus = true;
+            //        }
+            //        else {
+            //            // Hovering
+            //            btnCredits.IsHover = true;
+            //        }
+            //    }
 
-                //
-                // Quit button
-                //
+            //    //
+            //    // Quit button
+            //    //
 
-                else if (HoveringOver(btnQuit)) {
-                    if (ClickedOn(btnQuit)) {
-                        // Clicked
-                        mgr.Close();
-                    }
-                    else {
-                        // Hovering
-                        btnQuit.IsHover = true;
-                    }
-                }
+            //    //else if (HoveringOver(btnQuit)) {
+            //    //    if (ClickedOn(btnQuit)) {
+            //    //        // Clicked
+            //    //        mgr.Close();
+            //    //    }
+            //    //    else {
+            //    //        // Hovering
+            //    //        btnQuit.IsHover = true;
+            //    //    }
+            //    //}
 
-                //
-                // Else
-                //
+            //    //
+            //    // Else
+            //    //
 
-                else {
-                    // Neither clicking nor hovering
-                    // so lets reset the hover state
-                    btnHost.IsHover = false;
-                    btnJoin.IsHover = false;
-                    btnCredits.IsHover = false;
-                    btnQuit.IsHover = false;
-                }
-            }
+            //    else {
+            //        // Neither clicking nor hovering
+            //        // so lets reset the hover state
+            //        btnHost.IsHover = false;
+            //        btnJoin.IsHover = false;
+            //        btnCredits.IsHover = false;
+            //        btnQuit.IsHover = false;
+            //    }
+            //}
 
             // Save the mouse's state for next Update()
             prevMouse = mouse;

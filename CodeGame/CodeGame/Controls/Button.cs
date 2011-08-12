@@ -14,66 +14,94 @@ using CodeGame.Screens;
 
 namespace CodeGame.Controls {
     class Button {
-        //InputManager input = null;
 
-        SpriteFont font = null;
+        Dictionary<string, object> g;
 
-        Texture2D textureNormal = null;
-        Texture2D textureHover = null;
         Vector2 texturePosition = Vector2.Zero;
 
-        string text = "";
+        string text;
         Vector2 textPostion = Vector2.Zero;
 
         bool isHover = false;
 
-        public Button(ScreenManager mgr, string text) : this(mgr, Vector2.Zero, text) {
-            // Just a short-cut overload
-        }
+        public delegate void MouseClickHandler();
+        public event MouseClickHandler Click;
 
-        public Button(ScreenManager screen, Vector2 position, string text) {
-            //input = screen.InputManager;
+        //
+        // Constructor
+        //
+        
+        //
+        // This class starts subscribing to mouse events 
+        // (via TheMouse) upon construction.
+        //
 
-            font = screen.Content.Load<SpriteFont>("MainFont");
+        public Button(string text, Vector2 position) {
 
-            textureNormal = screen.Content.Load<Texture2D>("Button-Normal");
-            textureHover = screen.Content.Load<Texture2D>("Button-Hover");
+            g = Globals.Get();
+
             texturePosition = position;
             
             this.text = text;
             textPostion = CalculateTextPosition();
+
+            TheMouse.Subscribe(this, CalculateRectangle(), MouseOver, MouseOut, MouseClick);
+        }
+
+        private void MouseClick() {
+            if (Click != null)
+                Click();
+        }
+
+        private void MouseOver() {
+            isHover = true;
+        }
+
+        private void MouseOut() {
+            isHover = false;
+        }
+        
+        public void Cleanup() {
+            TheMouse.Unsubscribe(this);
         }
 
         public void Draw(SpriteBatch batch) {
             if (isHover) {
-                batch.Draw(textureHover, texturePosition, Color.White);
-                batch.DrawString(font, text, textPostion, Color.White);
+                batch.Draw((Texture2D)g["Button-Hover"], texturePosition, Color.White);
+                batch.DrawString((SpriteFont)g["MainFont"], text, textPostion, Color.White);
             }
             else {
-                batch.Draw(textureNormal, texturePosition, Color.White);
-                batch.DrawString(font, text, textPostion, Color.White * 0.7f);
+                batch.Draw((Texture2D)g["Button-Normal"], texturePosition, Color.White);
+                batch.DrawString((SpriteFont)g["MainFont"], text, textPostion, Color.White * 0.7f);
             }
         }
 
         private Vector2 CalculateTextPosition() {
             // MeasureString uses a Vector2 to represent width/height via x/y
-            Vector2 str = font.MeasureString(text);
-            float offset = (textureNormal.Width - str.X) / 2;
-            return new Vector2(texturePosition.X + offset, texturePosition.Y + 11);
+            Vector2 str = ((SpriteFont)g["MainFont"]).MeasureString(text);
+            float offset = (((Texture2D)g["Button-Normal"]).Width - str.X) / 2;
+            int paddingTop = 11;
+            return new Vector2(texturePosition.X + offset, texturePosition.Y + paddingTop);
+        }
+
+        private Rectangle CalculateRectangle() {
+            
+            return new Rectangle((int)texturePosition.X, (int)texturePosition.Y, (int)g["buttonWidth"], (int)g["buttonHeight"]);
         }
 
         public bool IsHover { get { return isHover; } set { isHover = value; } }
 
         public int X1 { get { return (int)texturePosition.X; } set { texturePosition.X = value; } }
         public int Y1 { get { return (int)texturePosition.Y; } set { texturePosition.X = value; } }
-        public int X2 { get { return (int)texturePosition.X + textureNormal.Width; } }
-        public int Y2 { get { return (int)texturePosition.Y + textureNormal.Height; } }
+        public int X2 { get { return (int)texturePosition.X + (int)g["buttonWidth"]; } }
+        public int Y2 { get { return (int)texturePosition.Y + (int)g["buttonHeight"]; } }
 
         public Vector2 Position { 
             get { return texturePosition; }
             set {
                 texturePosition = value;
                 textPostion = CalculateTextPosition();
+                TheMouse.SetRectangle(this, CalculateRectangle());
             }   
         }
 

@@ -45,9 +45,9 @@ namespace CodeGame.Screens {
             this.mgr = mgr;
             font = mgr.Content.Load<SpriteFont>("MainFont");
 
-            btnBack = new Button(mgr, new Vector2(20, 600 - 40 - 49), "Back");
-            btnReady = new Button(mgr, new Vector2(mgr.Width - 40 - Button.Width, 600 - 20 - 49), "Ready");
-            btnStart = new Button(mgr, new Vector2(mgr.Width - (40 * 2) - (Button.Width * 2), 600 - 20 - 49), "Start");
+            btnBack = new Button("Back", new Vector2(20, 600 - 40 - 49));
+            btnReady = new Button("Ready", new Vector2(mgr.Width - 40 - Button.Width, 600 - 20 - 49));
+            btnStart = new Button("Start", new Vector2(mgr.Width - (40 * 2) - (Button.Width * 2), 600 - 20 - 49));
         }
 
         public void SetClient(Client client) {

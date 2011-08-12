@@ -110,6 +110,7 @@
     <Compile Include="Controls\Chat.cs" />
     <Compile Include="Controls\ITextBox.cs" />
     <Compile Include="Controls\TextBox.cs" />
+    <Compile Include="Global.cs" />
     <Compile Include="Network\Commands.cs" />
     <Compile Include="Card.cs" />
     <Compile Include="Network\Server\Deck.cs" />
@@ -126,6 +127,7 @@
     <Compile Include="Network\Server\Listener.cs" />
     <Compile Include="Screens\ScreenManager.cs" />
     <Compile Include="Controls\StatusBar.cs" />
+    <Compile Include="TheMouse.cs" />
     <Compile Include="Utilities\FPS.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />

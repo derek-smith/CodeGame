@@ -20,6 +20,8 @@ namespace CodeGame {
         GraphicsDeviceManager graphics;
         SpriteBatch batch;
 
+        Dictionary<string, object> g;
+
         ScreenManager mgr;
 
         #if FPS_COUNTER
@@ -50,8 +52,21 @@ namespace CodeGame {
             // Create a new SpriteBatch, which can be used to draw textures.
             batch = new SpriteBatch(GraphicsDevice);
 
-            mgr = new ScreenManager(this);
+            g = Globals.Get();
+
+            g["game"] = this;
+            g["mgr"] = mgr;
+
+            g["MainFont"] = Content.Load<SpriteFont>("MainFont");
             
+            g["Button-Normal"] = Content.Load<Texture2D>("Button-Normal");
+            g["Button-Hover"] = Content.Load<Texture2D>("Button-Hover");
+
+            g["buttonWidth"] = ((Texture2D)g["Button-Normal"]).Width;
+            g["buttonHeight"] = ((Texture2D)g["Button-Normal"]).Height;
+
+            mgr = new ScreenManager(this);
+
             #if FPS_COUNTER
             fps = new FPS(Content, Window.ClientBounds, FPS.Display.BottomRight);
             #endif
@@ -65,6 +80,8 @@ namespace CodeGame {
             // Allows the game to exit
             //if (Keyboard.GetState().IsKeyDown(Keys.Escape))
             //    this.Exit();
+
+            TheMouse.Update();
 
             mgr.Update(gameTime);
 
